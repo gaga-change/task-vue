@@ -1,6 +1,16 @@
 import axios from 'axios'
 const base = '/api'
 
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+  // 对响应数据做点什么
+  return response;
+}, function (error) {
+  alert(error.response.data)
+  // 对响应错误做点什么
+  return Promise.reject(error);
+});
+
 export default {
   // 登入
   login: params => axios.post(`${base}/user/login`, params),

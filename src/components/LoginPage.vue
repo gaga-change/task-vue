@@ -74,9 +74,6 @@ export default {
 			}).then(res => {
 				console.log(res)
 				this.$router.push({ name: 'HomePage' })
-			}).catch((error)=> {
-				console.log(error.response.data)
-				alert('用户名或密码错误' + error.response.data)
 			})
 		},
 		// 注册
@@ -88,8 +85,6 @@ export default {
 			}).then(res => {
 				this.state = this.LOGIN
 				alert('注册成功')
-			}).catch(() => {
-				alert('用户名已存在')
 			})
 		}
 	}

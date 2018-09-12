@@ -14,7 +14,6 @@ export default {
 	},
 	created() {
 		api.currentUser().then(res => {
-			console.log(res)
 			if (!res.data) this.$router.push({ name: 'LoginPage' })
 		})
 	},
