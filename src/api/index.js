@@ -3,9 +3,19 @@ const base = '/api'
 
 export default {
   // 登入
-  apiLogin: params => axios.post(`${base}/user/login`, params),
+  login: params => axios.post(`${base}/user/login`, params),
   // 注册
-  apiRegister: params => axios.post(`${base}/user`, params),
+  register: params => axios.post(`${base}/user`, params),
   // 获取当前登入用户
-  apiCurrent: params => axios.get(`${base}/user/current`, params),
+  currentUser: params => axios.get(`${base}/user/current`, params),
+  // 退出登入
+  logout: params => axios.get(`${base}/user/logout`, params),
+  // 创建清单
+  createList: params => axios.post(`${base}/list`, params),
+  // 删除清单
+  deleteList: (params, listId) => axios.delete(`${base}/list/${listId}`),
+  // 修改清单
+  modifyList: (params, listId) => axios.put(`${base}/list/${listId}`, params),
+  // 查询清单
+  findList: (params, listId) => axios.get(`${base}/list/${listId}`, {params})
 }
