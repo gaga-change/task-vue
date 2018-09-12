@@ -72,9 +72,11 @@ export default {
 				username: this.username,
 				password: this.password
 			}).then(res => {
+				console.log(res)
 				this.$router.push({ name: 'HomePage' })
-			}).catch(() => {
-				alert('用户名或密码错误')
+			}).catch((error)=> {
+				console.log(error.response.data)
+				alert('用户名或密码错误' + error.response.data)
 			})
 		},
 		// 注册
