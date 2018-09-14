@@ -5,10 +5,12 @@
     <div>
       <h1>清单列表</h1>
       <ul>
-        <li v-for="item in listArr" :key="item._id" @click="checkoutList(item)">
+        <li v-for="(item, index) in listArr" :key="item._id" @click="checkoutList(item)">
           <a href="JavaScript:void(0)">
             <span v-text="item.name"></span>
           </a>
+          <button @click="deleteList(item, index)">删除</button>
+          <button @click="modifyList(item, index)">修改</button>
         </li>
       </ul>
       <div>
@@ -52,6 +54,20 @@ export default {
     this.initData()
   },
   methods: {
+    /** 修改清单 */
+    modifyList(item, index) {
+      let newName = window.prompt('清单名')
+      if (!newName) return
+      api.modifyList({name: newName}, item._id).then(res => {
+        item.name = newName
+      })
+    },
+    /** 删除清单 */
+    deleteList(item, index) {
+      api.deleteList({}, item._id).then(res => {
+        this.listArr.splice(index, 1)
+      })
+    },
     /** 切换清单 */
     checkoutList(item) {
       
