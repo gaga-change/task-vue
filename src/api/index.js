@@ -29,5 +29,9 @@ export default {
   /** 查询清单（单个） */
   findOneList: (params, listId) => axios.get(`${base}/list/${listId}`, {params}),
   /** 查询清单（多个） */
-  findList: (params) => axios.get(`${base}/list`, {params})  
+  findList: (params) => axios.get(`${base}/list`, {params}),
+  /** 添加任务 */
+  createTask: (params, listId) => axios.post(`${base}/task/${listId}`, params),
+  /** 查询任务（指定清单） */
+  findTask: (params, listId) => axios.get(`${base}/task/${listId}`, {params})
 }

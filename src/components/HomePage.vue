@@ -18,11 +18,15 @@
         <button class="btn btn-default" @click="addList">添加</button>
       </div>
     </div>
-    <div>
-      <h2>任务列表</h2>
-      <ul>
-        <li>
-
+    <div v-if="checkItem">
+      <h2>任务列表[{{checkItem.name}}]</h2>
+      <ul v-if="checkItem.tasks">
+        <li v-for="item in checkItem.tasks" :key="item._id">
+          <a href="JavaScript:void(0)">
+            <span v-text="item.name"></span>
+          </a>
+          <!-- <button @click="deleteList(item, index)">删除</button> -->
+          <!-- <button @click="modifyList(item, index)">修改</button> -->
         </li>
       </ul>
       <div>
@@ -43,6 +47,7 @@ export default {
       newTask: {
         name: ''
       },
+      checkItem: null, // 当前显示的清单
       listArr: []
     };
   },
@@ -58,7 +63,7 @@ export default {
     modifyList(item, index) {
       let newName = window.prompt('清单名')
       if (!newName) return
-      api.modifyList({name: newName}, item._id).then(res => {
+      api.modifyList({ name: newName }, item._id).then(res => {
         item.name = newName
       })
     },
@@ -70,7 +75,11 @@ export default {
     },
     /** 切换清单 */
     checkoutList(item) {
-      
+      if (!item.tasks) this.$set(item, 'tasks', [])
+      this.checkItem = item
+      api.findTask({}, item._id).then(res => {
+        item.tasks = res.data
+      })
     },
     /** 添加清单 */
     addList() {
@@ -81,7 +90,10 @@ export default {
     },
     /** 添加任务 */
     addTask() {
-      
+      api.createTask(this.newTask, this.checkItem._id).then(res => {
+        this.newTask.name = ''
+        this.checkItem.tasks.push(res.data)
+      })
     },
     /** 初始化数据 */
     initData() {
