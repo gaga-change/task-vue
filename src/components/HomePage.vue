@@ -34,6 +34,7 @@
         <button class="btn btn-default" @click="addTask">添加</button>
       </div>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 <script>
