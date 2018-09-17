@@ -21,11 +21,11 @@
     <div v-if="checkItem">
       <h2>任务列表[{{checkItem.name}}]</h2>
       <ul v-if="checkItem.tasks">
-        <li v-for="item in checkItem.tasks" :key="item._id">
+        <li v-for="(item, index) in checkItem.tasks" :key="item._id">
           <a href="JavaScript:void(0)">
             <span v-text="item.name"></span>
           </a>
-          <!-- <button @click="deleteList(item, index)">删除</button> -->
+          <button @click="deleteTask(item, index)">删除</button>
           <!-- <button @click="modifyList(item, index)">修改</button> -->
         </li>
       </ul>
@@ -60,6 +60,12 @@ export default {
     this.initData()
   },
   methods: {
+    /** 删除清单 */
+    deleteTask(item, index) {
+      api.deleteTask({}, this.checkItem._id, item._id).then(res => {
+        this.checkItem.tasks.splice(index, 1)
+      })
+    },
     /** 修改清单 */
     modifyList(item, index) {
       let newName = window.prompt('清单名')
