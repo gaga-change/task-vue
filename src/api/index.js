@@ -35,5 +35,7 @@ export default {
   /** 删除任务 */
   deleteTask: (params, listId, taskId) => axios.delete(`${base}/task/${listId}/${taskId}`, params),
   /** 查询任务（指定清单） */
-  findTask: (params, listId) => axios.get(`${base}/task/${listId}`, {params})
+  findTask: (params, listId) => axios.get(`${base}/task/${listId}`, {params}),
+  /** 查询任务（单个） */
+  findOneTask: (params, listId, taskId) => axios.get(`${base}/task/${listId}/${taskId}`, {params}),
 }

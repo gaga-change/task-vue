@@ -58,7 +58,8 @@ export default {
     },
     /** 切换清单 */
     checkoutList(item) {
-      if (!item.tasks) this.$set(item, 'tasks', [])
+      if (!item) return
+      // if (!item.tasks) this.$set(item, 'tasks', [])
       this.checkItem = item
       this.$router.push({name: 'ListPage', params: {listId: this.checkItem._id}})
     },
