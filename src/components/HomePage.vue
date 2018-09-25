@@ -1,29 +1,43 @@
 <template>
-  <div>
-    主页
-    <button @click="logout">退出</button>
-    <div>
-      <h1>清单列表</h1>
-      <ul>
-        <li v-for="(item, index) in listArr" :key="item._id">
-          <a href="JavaScript:void(0)" @click="checkoutList(item)">
-            <span v-text="item.name"></span>
-          </a>
-          <button @click="deleteList(item, index)">删除</button>
-          <button @click="modifyList(item, index)">修改</button>
-        </li>
-      </ul>
+  <div class="content-main">
+    <div class="content-left">
+      <!-- 顶部 -->
+      <div hidden>
+        主页
+        <button @click="logout">退出</button>
+      </div>
+      <!-- 清单列表 -->
       <div>
-        <label>清单名 <input type="text" v-model="newList.name"></label>
-        <button class="btn btn-default" @click="addList">添加</button>
+        <ul class="tab-list list-inline">
+          <li>
+            <a href="JavaScript:void(0)">清单</a>
+          </li>
+        </ul>
+        <ul>
+          <li v-for="(item, index) in listArr" :key="item._id">
+            <a href="JavaScript:void(0)">
+              <span v-text="item.name"></span>
+            </a>
+            <button @click="deleteList(item, index)">删除</button>
+            <button @click="modifyList(item, index)">修改</button>
+          </li>
+        </ul>
+        <div>
+          <label>清单名 <input type="text" v-model="newList.name"></label>
+          <button class="btn btn-default" @click="addList">添加</button>
+        </div>
       </div>
     </div>
-    <!-- 任务列表 -->
-    <router-view></router-view>
+    <div class="content-right">
+      <!-- 任务列表 -->
+      <router-view></router-view>
+    </div>
   </div>
 </template>
+
 <script>
-import api from "../api";
+import api from "../api"
+
 export default {
   data() {
     return {
@@ -64,7 +78,7 @@ export default {
       if (!item) return
       // if (!item.tasks) this.$set(item, 'tasks', [])
       this.checkItem = item
-      this.$router.push({name: 'ListPage', params: {listId: this.checkItem._id}})
+      this.$router.push({ name: 'ListPage', params: { listId: this.checkItem._id } })
     },
     /** 添加清单 */
     addList() {
@@ -90,6 +104,38 @@ export default {
       this.$router.push({ name: "LoginPage" })
     }
   }
-};
+}
 </script>
 
+<style lang="less">
+// 主体结构
+.content-main {
+  position: relative;
+  height: 100%;
+  // 主体左侧：清单列表
+  .content-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 260px;
+    background-color: #5069c4;
+    color: #fff;
+  }
+  // 主题右侧：任务列表&详情
+  .content-right {
+  }
+}
+
+.tab-list {
+  display: flex;
+  li {
+    flex: 1;
+    text-align: center;
+    a {
+      display: block;
+      color: #fff;
+    }
+  }
+}
+</style>
