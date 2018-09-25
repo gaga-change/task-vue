@@ -2,8 +2,8 @@
   <div>
     <h2>任务列表</h2>
     <ul v-if="taskArr">
-      <li v-for="(item, index) in taskArr" :key="item._id" @click="checkouTask(item)">
-        <a href="JavaScript:void(0)">
+      <li v-for="(item, index) in taskArr" :key="item._id" >
+        <a href="JavaScript:void(0)" @click="checkouTask(item)">
           <span v-text="item.name"></span>
         </a>
         <button @click="deleteTask(item, index)">删除</button>

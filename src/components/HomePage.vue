@@ -5,8 +5,8 @@
     <div>
       <h1>清单列表</h1>
       <ul>
-        <li v-for="(item, index) in listArr" :key="item._id" @click="checkoutList(item)">
-          <a href="JavaScript:void(0)">
+        <li v-for="(item, index) in listArr" :key="item._id">
+          <a href="JavaScript:void(0)" @click="checkoutList(item)">
             <span v-text="item.name"></span>
           </a>
           <button @click="deleteList(item, index)">删除</button>
@@ -37,9 +37,12 @@ export default {
   created() {
     // 判断有无登陆
     api.currentUser().then(res => {
-      if (!res.data) this.$router.push({ name: "LoginPage" })
+      if (!res.data) {
+        this.$router.push({ name: "LoginPage" })
+      } else {
+        this.initData()
+      }
     })
-    this.initData()
   },
   methods: {
     /** 修改清单 */
