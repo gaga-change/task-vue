@@ -13,18 +13,18 @@
             <a href="JavaScript:void(0)">清单</a>
           </li>
         </ul>
-        <ul>
-          <li v-for="(item, index) in listArr" :key="item._id">
+        <ul class="dir-list list-inline">
+          <li v-for="(item, index) in listArr" :key="item._id" :class="{'active': item._id === checkItem._id}" @click="checkoutList(item)">
             <a href="JavaScript:void(0)">
               <span v-text="item.name"></span>
             </a>
-            <button @click="deleteList(item, index)">删除</button>
-            <button @click="modifyList(item, index)">修改</button>
+            <button @click="deleteList(item, index)" hidden>删除</button>
+            <button @click="modifyList(item, index)" hidden>修改</button>
           </li>
         </ul>
-        <div>
+        <div hidden>
           <label>清单名 <input type="text" v-model="newList.name"></label>
-          <button class="btn btn-default" @click="addList">添加</button>
+            <button class="btn btn-default" @click="addList">添加</button>
         </div>
       </div>
     </div>
@@ -124,17 +124,49 @@ export default {
   }
   // 主题右侧：任务列表&详情
   .content-right {
+    padding-left: 260px;
   }
 }
 
-.tab-list {
-  display: flex;
-  li {
-    flex: 1;
-    text-align: center;
+.content-left {
+  ul {
+    li {
+      a {
+        color: #fff;
+        opacity: 0.8;
+      }
+    }
+  }
+  .tab-list {
+    display: flex;
+    li {
+      flex: 1;
+      text-align: center;
+      a {
+        display: block;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .dir-list {
+    li {
+      &:hover {
+        background-color: rgba(0, 0, 0, .05);
+      }
+      &.active {
+        background-color: rgba(0,0,0,.14);
+      }
+    }
     a {
       display: block;
-      color: #fff;
+      line-height: 36px;
+      padding: 0 20px;
+      &:hover {
+        text-decoration: none;
+      }
     }
   }
 }
