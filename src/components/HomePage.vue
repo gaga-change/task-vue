@@ -21,16 +21,40 @@
             <button @click="deleteList(item, index)" hidden>删除</button>
             <button @click="modifyList(item, index)" hidden>修改</button>
           </li>
+          <li>
+            <a class="" href="JavaScript:void(0)" data-toggle="modal" data-target="#NewListModal">+ 添加清单</a>
+          </li>
         </ul>
-        <div hidden>
-          <label>清单名 <input type="text" v-model="newList.name"></label>
-            <button class="btn btn-default" @click="addList">添加</button>
-        </div>
       </div>
     </div>
     <div class="content-right">
       <!-- 任务列表 -->
       <router-view></router-view>
+    </div>
+    <!-- 添加清单提示框 -->
+    <div class="modal fade" id="NewListModal" tabindex="-1" role="dialog" aria-labelledby="NewListModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="NewListModalLabel">添加清单</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label hide">清单名称</label>
+                <input type="text" class="form-control" id="recipient-name" v-model="newList.name">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" @click="addList">保存</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -96,7 +120,7 @@ export default {
     findList() {
       api.findList().then(res => {
         this.listArr.push(...res.data)
-        
+
         // 根据路由还原指定 清单
         if (this.params.listId) {
           let item = this.listArr.filter(item => item._id === this.params.listId)[0]
@@ -173,6 +197,7 @@ export default {
       display: block;
       line-height: 36px;
       padding: 0 20px;
+      outline: none;
       &:hover {
         text-decoration: none;
       }
