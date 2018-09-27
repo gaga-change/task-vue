@@ -45,6 +45,7 @@ export default {
         name: ''
       },
       checkItem: null, // 当前显示的清单
+      params: this.$route.params,
       listArr: []
     };
   },
@@ -95,7 +96,15 @@ export default {
     findList() {
       api.findList().then(res => {
         this.listArr.push(...res.data)
-        this.checkoutList(this.listArr[0])
+        
+        // 根据路由还原指定 清单
+        if (this.params.listId) {
+          let item = this.listArr.filter(item => item._id === this.params.listId)[0]
+          console.log(item)
+          this.checkoutList(item || this.listArr[0])
+        } else {
+          this.checkoutList(this.listArr[0])
+        }
       })
     },
     /** 退出登录状态 */
@@ -154,10 +163,10 @@ export default {
   .dir-list {
     li {
       &:hover {
-        background-color: rgba(0, 0, 0, .05);
+        background-color: rgba(0, 0, 0, 0.05);
       }
       &.active {
-        background-color: rgba(0,0,0,.14);
+        background-color: rgba(0, 0, 0, 0.14);
       }
     }
     a {
