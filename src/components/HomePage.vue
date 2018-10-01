@@ -2,7 +2,7 @@
   <div class="content-main">
     <div class="content-left">
       <!-- 顶部 -->
-      <div hidden>
+      <div class="d-none">
         主页
         <button @click="logout">退出</button>
       </div>
@@ -15,11 +15,14 @@
         </ul>
         <ul class="dir-list list-inline">
           <li v-for="(item, index) in listArr" :key="item._id" :class="{'active': item._id === checkItem._id}" @click="checkoutList(item)">
-            <a href="JavaScript:void(0)">
+            <a class="item-a" href="JavaScript:void(0)">
               <span v-text="item.name"></span>
+              <i class="list-control-btn" @click.stop="showControl($event)">操作</i>
             </a>
-            <button @click="deleteList(item, index)" hidden>删除</button>
-            <button @click="modifyList(item, index)" hidden>修改</button>
+            <div class="list-control d-none">
+              <button class="btn btn-sm btn-outline-warning" @click.stop="deleteList(item, index)">删除</button>
+              <button class="btn btn-sm btn-outline-light" @click.stop="modifyList(item, index)">修改</button>
+            </div>
           </li>
           <li>
             <a class="" href="JavaScript:void(0)" data-toggle="modal" data-target="#NewListModal">+ 添加清单</a>
@@ -70,8 +73,10 @@ export default {
       },
       checkItem: null, // 当前显示的清单
       params: this.$route.params,
-      listArr: []
-    };
+      listArr: [],
+      lastControlEle: null, // 上一个显示的操作菜单
+      documentClickFn: null
+    }
   },
   created() {
     // 判断有无登陆
@@ -82,8 +87,30 @@ export default {
         this.initData()
       }
     })
+    // 全局点击时，自动关闭 操作菜单
+    this.documentClickFn = e => {
+      this.lastControlEle.addClass('d-none')
+    }
+    $(document).on('click', this.documentClickFn)
+  },
+  destroyed() {
+    $(document).off('click', this.documentClickFn)
   },
   methods: {
+    // 显示清单“操作”菜单
+    showControl(e) {
+      let target = $(e.target)
+      let controlEle = target.closest('a').siblings('.list-control')
+      if (controlEle.hasClass('d-none')) {
+        if (this.lastControlEle) {
+          this.lastControlEle.addClass('d-none')
+        }
+        controlEle.removeClass('d-none')
+        this.lastControlEle = controlEle
+      } else {
+        controlEle.addClass('d-none')
+      }
+    },
     /** 修改清单 */
     modifyList(item, index) {
       let newName = window.prompt('清单名')
@@ -94,6 +121,7 @@ export default {
     },
     /** 删除清单 */
     deleteList(item, index) {
+      if (!confirm(`是否删除清单【${item.name}】`)) return
       api.deleteList({}, item._id).then(res => {
         this.listArr.splice(index, 1)
       })
@@ -120,11 +148,9 @@ export default {
     findList() {
       api.findList().then(res => {
         this.listArr.push(...res.data)
-
         // 根据路由还原指定 清单
         if (this.params.listId) {
           let item = this.listArr.filter(item => item._id === this.params.listId)[0]
-          console.log(item)
           this.checkoutList(item || this.listArr[0])
         } else {
           this.checkoutList(this.listArr[0])
@@ -161,12 +187,12 @@ export default {
   }
 }
 
+// 左侧清单列表
 .content-left {
   ul {
     li {
       a {
-        color: #fff;
-        opacity: 0.8;
+        color: #fffc;
       }
     }
   }
@@ -193,7 +219,23 @@ export default {
         background-color: rgba(0, 0, 0, 0.14);
       }
     }
-    a {
+    // “操作” 按钮
+    .list-control-btn {
+      float: right;
+      font-size: 12px;
+      font-style: normal;
+      &:hover {
+        color: #fff;
+      }
+    }
+    // 操作域
+    .list-control {
+      padding: 0 20px;
+      .btn {
+        font-size: 12px;
+      }
+    }
+    .item-a {
       display: block;
       line-height: 36px;
       padding: 0 20px;
