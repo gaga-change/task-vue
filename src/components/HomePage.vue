@@ -25,7 +25,7 @@
             </div>
           </li>
           <li>
-            <a class="" href="JavaScript:void(0)" data-toggle="modal" data-target="#NewListModal">+ 添加清单</a>
+            <a class="item-a" href="JavaScript:void(0)" data-toggle="modal" data-target="#NewListModal">+ 添加清单</a>
           </li>
         </ul>
       </div>
@@ -176,14 +176,20 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 1;
     height: 100%;
     width: 260px;
     background-color: #5069c4;
     color: #fff;
+    transition: all 0.2s ease-in-out;
+    @media (max-width: 1020px) {
+      width: 0;
+      overflow: hidden;
+    }
   }
   // 主题右侧：任务列表&详情
   .content-right {
-    padding-left: 260px;
+    // padding-left: 260px;
   }
 }
 

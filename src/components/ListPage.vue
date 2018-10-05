@@ -1,8 +1,13 @@
 <template>
-  <div>
-    <h2>任务列表</h2>
-    <ul v-if="taskArr">
-      <li v-for="(item, index) in taskArr" :key="item._id" >
+  <div class="list-page">
+    <div class="list-area">
+      列表区域
+    </div>
+    <div class="detail-area">
+      详情区域
+    </div>
+    <ul class="d-none" v-if="taskArr">
+      <li v-for="(item, index) in taskArr" :key="item._id">
         <a href="JavaScript:void(0)" @click="checkouTask(item)">
           <span v-text="item.name"></span>
         </a>
@@ -10,14 +15,15 @@
         <!-- <button @click="modifyList(item, index)">修改</button> -->
       </li>
     </ul>
-    <div>
+    <div class="d-none">
       <label>任务名 <input type="text" v-model="newTask.name"></label>
-      <button class="btn btn-default" @click="addTask">添加</button>
+        <button class="btn btn-default" @click="addTask">添加</button>
     </div>
     <!-- 任务详情 -->
     <router-view></router-view>
   </div>
 </template>
+
 <script>
 import api from '../api'
 export default {
@@ -79,4 +85,39 @@ export default {
   }
 }
 </script>
+
+<style lang="less">
+.list-page {
+  .list-area {
+    position: absolute;
+    width: 64%;
+    right: 36%;
+    padding-left: 260px;
+    @media (max-width: 1020px) {
+      padding-left: 0;
+    }
+    @media (max-width: 920px) {
+      width: 100%;
+      right: 0;
+    }
+  }
+  .detail-area {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 36%;
+    border-left: 1px solid #ededed;
+    background-color: #fafafa;
+     @media (max-width: 920px) {
+      width: 0;
+      overflow: hidden;
+    }
+  }
+
+  .list-area,
+  .detail-area {
+    transition: all 0.2s ease-in-out;
+  }
+}
+</style>
 
