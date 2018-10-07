@@ -1,26 +1,28 @@
 <template>
   <div class="list-page">
+    <!-- 任务列表 -->
     <div class="list-area">
-      列表区域
-    </div>
-    <div class="detail-area">
-      详情区域
-    </div>
-    <ul class="d-none" v-if="taskArr">
-      <li v-for="(item, index) in taskArr" :key="item._id">
-        <a href="JavaScript:void(0)" @click="checkouTask(item)">
-          <span v-text="item.name"></span>
-        </a>
-        <button @click="deleteTask(item, index)">删除</button>
-        <!-- <button @click="modifyList(item, index)">修改</button> -->
-      </li>
-    </ul>
-    <div class="d-none">
-      <label>任务名 <input type="text" v-model="newTask.name"></label>
-        <button class="btn btn-default" @click="addTask">添加</button>
+      <div class="list-header">
+        <h2 class="header-name">任务列表</h2>
+      </div>
+      <div class="new-task-area">
+        <input class="new-task-ipt" type="text" placeholder='添加任务至"任务列表"，回车即可保存' v-model="newTask.name" @keyup.enter="addTask">
+      </div>
+      <ul class="task-list-ul" v-if="taskArr">
+        <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" :class="{'active': checkTask && checkTask._id === item._id}">
+          <a href="JavaScript:void(0)" @click="checkouTask(item)">
+            <span v-text="item.name"></span>
+          </a>
+          <!-- <button @click="deleteTask(item, index)">删除</button> -->
+          <!-- <button @click="modifyList(item, index)">修改</button> -->
+        </li>
+      </ul>
     </div>
     <!-- 任务详情 -->
-    <router-view></router-view>
+    <div class="detail-area">
+      <router-view></router-view>
+    </div>
+    <!-- 任务详情 -->
   </div>
 </template>
 
@@ -108,7 +110,7 @@ export default {
     width: 36%;
     border-left: 1px solid #ededed;
     background-color: #fafafa;
-     @media (max-width: 920px) {
+    @media (max-width: 920px) {
       width: 0;
       overflow: hidden;
     }
@@ -117,6 +119,55 @@ export default {
   .list-area,
   .detail-area {
     transition: all 0.2s ease-in-out;
+  }
+  .list-header {
+    padding: 0 20px;
+    margin: 12px 0;
+    .header-name {
+      height: 36px;
+      margin: 0;
+      line-height: 36px;
+      font-size: 22px;
+      font-weight: 400;
+      color: rgba(0,0,0,.85);
+    }
+  }
+  .new-task-area {
+    padding: 0 16px;
+    margin: 10px 0;
+    .new-task-ipt {
+      display: block;
+      height: 36px;
+      width: 100%;
+      padding: 0 10px;
+      font-size: 14px;
+      border: 1px solid rgba(0,0,0,.14);
+      outline: 0;
+      border-radius: 2px;
+      &:focus {
+        border-color: #617fde;
+      }
+    }
+  }
+  .task-list-ul {
+    list-style: none;
+    padding: 0;
+    & > li {
+      cursor: pointer;
+      &.active {
+        background-color: #f3f3f3;
+      }
+      &:hover {
+        background-color: rgba(243,243,243,.5);
+      }
+      & > a {
+        display: block;
+        height: 36px;
+        line-height: 36px;
+        padding: 0 23px;
+        text-decoration: none;
+      }
+    }
   }
 }
 </style>

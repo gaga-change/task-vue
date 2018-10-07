@@ -89,7 +89,8 @@ export default {
     })
     // 全局点击时，自动关闭 操作菜单
     this.documentClickFn = e => {
-      this.lastControlEle.addClass('d-none')
+      if (this.lastControlEle)
+        this.lastControlEle.addClass('d-none')
     }
     $(document).on('click', this.documentClickFn)
   },
