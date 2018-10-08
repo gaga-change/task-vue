@@ -12,9 +12,13 @@
         <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" :class="{'active': checkTask && checkTask._id === item._id}">
           <a href="JavaScript:void(0)" @click="checkouTask(item)">
             <span v-text="item.name"></span>
+            <i class="list-control-btn" @click.stop="showControl($event)">操作</i>
           </a>
           <!-- <button @click="deleteTask(item, index)">删除</button> -->
           <!-- <button @click="modifyList(item, index)">修改</button> -->
+          <div class="list-control d-none">
+            <button class="btn btn-sm btn-outline-warning" @click.stop="deleteTask(item, index)">删除</button>
+          </div>
         </li>
       </ul>
     </div>
@@ -43,6 +47,15 @@ export default {
     // 获取链接中的清单ID
     this.listId = this.$route.params.listId
     this.initData()
+    // 全局点击时，自动关闭 操作菜单
+    this.documentClickFn = e => {
+      if (this.lastControlEle)
+        this.lastControlEle.addClass('d-none')
+    }
+    $(document).on('click', this.documentClickFn)
+  },
+  destroyed() {
+    $(document).off('click', this.documentClickFn)
   },
   beforeRouteUpdate(to, from, next) {
     // 子页面路由更新 不监听
@@ -58,6 +71,20 @@ export default {
       api.findTask({}, this.listId).then(res => {
         this.taskArr = res.data
       })
+    },
+    // 显示清单“操作”菜单
+    showControl(e) {
+      let target = $(e.target)
+      let controlEle = target.closest('a').siblings('.list-control')
+      if (controlEle.hasClass('d-none')) {
+        if (this.lastControlEle) {
+          this.lastControlEle.addClass('d-none')
+        }
+        controlEle.removeClass('d-none')
+        this.lastControlEle = controlEle
+      } else {
+        controlEle.addClass('d-none')
+      }
     },
     /** 切换任务 */
     checkouTask(item) {
@@ -152,6 +179,22 @@ export default {
   .task-list-ul {
     list-style: none;
     padding: 0;
+    // “操作” 按钮
+    .list-control-btn {
+      float: right;
+      font-size: 12px;
+      font-style: normal;
+      &:hover {
+        // color: #fff;
+      }
+    }
+    // 操作域
+    .list-control {
+      padding: 0 20px;
+      .btn {
+        font-size: 12px;
+      }
+    }
     & > li {
       cursor: pointer;
       &.active {
