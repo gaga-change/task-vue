@@ -11,11 +11,10 @@
       <ul class="task-list-ul" v-if="taskArr">
         <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" :class="{'active': checkTask && checkTask._id === item._id}">
           <a href="JavaScript:void(0)" @click="checkouTask(item)">
-            <span v-text="item.name"></span>
+            <input class="task-name-ipt" type="text" v-model="item.name" @change="taskNameChange(item)">
+            <!-- <span v-text="item.name"></span> -->
             <i class="list-control-btn" @click.stop="showControl($event)">操作</i>
           </a>
-          <!-- <button @click="deleteTask(item, index)">删除</button> -->
-          <!-- <button @click="modifyList(item, index)">修改</button> -->
           <div class="list-control d-none">
             <button class="btn btn-sm btn-outline-warning" @click.stop="deleteTask(item, index)">删除</button>
           </div>
@@ -98,6 +97,13 @@ export default {
         }
       })
     },
+    /** 任务名称修改 */
+    taskNameChange(item) {
+      console.log(item)
+      api.modifyTask({name: item.name}, this.listId, item._id).then(res => {
+        console.log('res: ', res)
+      })
+    },
     /** 添加任务 */
     addTask() {
       api.createTask(this.newTask, this.listId).then(res => {
@@ -156,7 +162,7 @@ export default {
       line-height: 36px;
       font-size: 22px;
       font-weight: 400;
-      color: rgba(0,0,0,.85);
+      color: rgba(0, 0, 0, 0.85);
     }
   }
   .new-task-area {
@@ -168,7 +174,7 @@ export default {
       width: 100%;
       padding: 0 10px;
       font-size: 14px;
-      border: 1px solid rgba(0,0,0,.14);
+      border: 1px solid rgba(0, 0, 0, 0.14);
       outline: 0;
       border-radius: 2px;
       &:focus {
@@ -195,16 +201,24 @@ export default {
         font-size: 12px;
       }
     }
+    // 任务列表 输入框
+    .task-name-ipt {
+      flex: 1;
+      border: none;
+      background: none;
+      outline: none;
+      cursor: pointer;
+    }
     & > li {
       cursor: pointer;
       &.active {
         background-color: #f3f3f3;
       }
       &:hover {
-        background-color: rgba(243,243,243,.5);
+        background-color: rgba(243, 243, 243, 0.5);
       }
       & > a {
-        display: block;
+        display: flex;
         height: 36px;
         line-height: 36px;
         padding: 0 23px;
