@@ -190,9 +190,6 @@ export default {
       float: right;
       font-size: 12px;
       font-style: normal;
-      &:hover {
-        // color: #fff;
-      }
     }
     // 操作域
     .list-control {

@@ -188,10 +188,6 @@ export default {
       overflow: hidden;
     }
   }
-  // 主题右侧：任务列表&详情
-  .content-right {
-    // padding-left: 260px;
-  }
 }
 
 // 左侧清单列表
