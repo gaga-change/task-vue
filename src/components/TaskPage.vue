@@ -17,8 +17,19 @@ export default {
       taskId: null,
       listId: null,
       task: {
-        content: ''
+        content: '',
+        name: ''
       }
+    }
+  },
+  computed: {
+    newTaskName() {
+      return this.$store.state.inputTaskName
+    }
+  },
+  watch: {
+    newTaskName(val, oldVal) {
+      this.task.name = val
     }
   },
   created() {

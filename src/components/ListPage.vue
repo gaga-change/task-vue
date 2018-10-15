@@ -11,7 +11,7 @@
       <ul class="task-list-ul" v-if="taskArr">
         <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" :class="{'active': checkTask && checkTask._id === item._id}">
           <a href="JavaScript:void(0)" @click="checkouTask(item)">
-            <input class="task-name-ipt" type="text" v-model="item.name" @change="taskNameChange(item)">
+            <input class="task-name-ipt" type="text" v-model="item.name" @change="taskNameChange(item)" @input="taskNameInput(item)">
             <!-- <span v-text="item.name"></span> -->
             <i class="list-control-btn" @click.stop="showControl($event)">操作</i>
           </a>
@@ -97,9 +97,11 @@ export default {
         }
       })
     },
+    taskNameInput(item) {
+      this.$store.commit('changeInputTaskName', item.name)
+    },
     /** 任务名称修改 */
     taskNameChange(item) {
-      console.log(item)
       api.modifyTask({name: item.name}, this.listId, item._id).then(res => {
         console.log('res: ', res)
       })
