@@ -11,7 +11,7 @@
       <ul class="task-list-ul" v-if="taskArr">
         <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" :class="{'active': checkTask && checkTask._id === item._id}">
           <a href="JavaScript:void(0)" @click="checkouTask(item)">
-            <input class="task-name-ipt" type="text" v-model="item.name" @change="taskNameChange(item)" @input="taskNameInput(item)">
+            <input class="task-name-ipt" type="text" v-model="item.name" @change="taskNameChange(item)" @input="taskNameInput(item)" @keyup.enter="blur($event)">
             <!-- <span v-text="item.name"></span> -->
             <i class="list-control-btn" @click.stop="showControl($event)">操作</i>
           </a>
@@ -70,6 +70,10 @@ export default {
       api.findTask({}, this.listId).then(res => {
         this.taskArr = res.data
       })
+    },
+    /** 使当前元素失去焦点 */
+    blur(e) {
+      e.target.blur()
     },
     // 显示清单“操作”菜单
     showControl(e) {
