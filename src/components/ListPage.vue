@@ -42,6 +42,16 @@ export default {
       taskArr: null
     }
   },
+  computed: {
+    newTaskName() {
+      return this.$store.state.inputTaskName
+    }
+  },
+  watch: {
+    newTaskName(val, oldVal) {
+      this.checkTask.name = val
+    }
+  },
   created() {
     // 获取链接中的清单ID
     this.listId = this.$route.params.listId
@@ -101,6 +111,7 @@ export default {
         }
       })
     },
+    /** 任务名称修改事件 */
     taskNameInput(item) {
       this.$store.commit('changeInputTaskName', item.name)
     },

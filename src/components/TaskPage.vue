@@ -1,7 +1,9 @@
 <template>
   <div class="task-page">
     <div class="title-area">
-      <h2 class="task-name" v-text="task.name"></h2>
+      <h2 class="task-name">
+        <input type="text" v-model="task.name" @change="taskContentChange(task)"  @input="taskNameInput(task)">
+      </h2>
     </div>
     <div class="content-area">
       <textarea v-model="task.content" placeholder="描述" @change="taskContentChange(task)"></textarea>
@@ -54,10 +56,13 @@ export default {
         this.task = res.data
       })
     },
+    /** 任务名称修改事件 */
+    taskNameInput(item) {
+      this.$store.commit('changeInputTaskName', item.name)
+    },
     /** 任务名称修改 */
     taskContentChange(item) {
-      console.log(item)
-      api.modifyTask({ content: item.content }, this.listId, this.taskId).then(res => {
+      api.modifyTask(item, this.listId, this.taskId).then(res => {
         console.log('res: ', res)
       })
     }
@@ -78,6 +83,13 @@ export default {
       word-wrap: break-word;
       font-size: 16px;
       font-weight: 700;
+      input {
+        font-size: inherit;
+        font-weight: inherit;
+        outline: none;
+        border: none;
+        background-color: inherit;
+      }
     }
   }
   .content-area {
