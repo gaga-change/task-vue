@@ -14,7 +14,7 @@
           </li>
         </ul>
         <ul class="dir-list list-inline">
-          <li v-for="(item, index) in listArr" :key="item._id" :class="{'active': item._id === checkItem._id}" @click="checkoutList(item)">
+          <li v-for="(item, index) in listArr" :key="item._id" :class="{'active': checkItem && item._id === checkItem._id}" @click="checkoutList(item)">
             <a class="item-a" href="JavaScript:void(0)">
               <span v-text="item.name"></span>
               <i class="list-control-btn" @click.stop="showControl($event)">操作</i>
@@ -122,7 +122,7 @@ export default {
     },
     /** 删除清单 */
     deleteList(item, index) {
-      if (!confirm(`是否删除清单【${item.name}】`)) return
+      // if (!confirm(`是否删除清单【${item.name}】`)) return
       api.deleteList({}, item._id).then(res => {
         this.listArr.splice(index, 1)
       })
@@ -139,6 +139,7 @@ export default {
       api.createList(this.newList).then(res => {
         this.newList.name = ''
         this.listArr.push(res.data)
+        this.checkoutList(res.data)
       })
     },
     /** 初始化数据 */
