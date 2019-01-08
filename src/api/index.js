@@ -31,13 +31,13 @@ export default {
   /** 查询清单（多个） */
   findList: (params) => axios.get(`${base}/list`, {params}),
   /** 添加任务 */
-  createTask: (params, listId) => axios.post(`${base}/task/${listId}`, params),
+  createTask: (params, listId) => axios.post(`${base}/list/${listId}/task`, params),
   /** 删除任务 */
-  deleteTask: (params, listId, taskId) => axios.delete(`${base}/task/${listId}/${taskId}`, params),
+  deleteTask: (params, listId, taskId) => axios.delete(`${base}/list/${listId}/task/${taskId}`, params),
   /** 修改任务 */
-  modifyTask: (params, listId, taskId) => axios.put(`${base}/task/${listId}/${taskId}`, params),
+  modifyTask: (params, listId, taskId) => axios.put(`${base}/list/${listId}/task/${taskId}`, params),
   /** 查询任务（指定清单） */
-  findTask: (params, listId) => axios.get(`${base}/task/${listId}`, {params}),
+  findTask: (params, listId) => axios.get(`${base}/list/${listId}/task`, {params}),
   /** 查询任务（单个） */
-  findOneTask: (params, listId, taskId) => axios.get(`${base}/task/${listId}/${taskId}`, {params}),
+  findOneTask: (params, listId, taskId) => axios.get(`${base}/list/${listId}/task/${taskId}`, {params}),
 }
