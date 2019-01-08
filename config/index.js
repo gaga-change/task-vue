@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://task.api.junn.top',
+        target: 'http://localhost:3000',
         changeOrigin: true
       }
     },
