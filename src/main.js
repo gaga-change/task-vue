@@ -5,7 +5,7 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-const socket = io({path: '/api/socket'})
+// const socket = io({path: '/api/socket'})
 
 /* eslint-disable no-new */
 new Vue({
