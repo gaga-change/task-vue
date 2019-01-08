@@ -79,14 +79,9 @@ export default {
     }
   },
   created() {
-    // 判断有无登陆
-    api.currentUser().then(res => {
-      if (!res.data) {
-        this.$router.push({ name: "LoginPage" })
-      } else {
-        this.initData()
-      }
-    })
+    window.GO_LOGIN = () => {
+      this.$router.push({ name: "LoginPage" })
+    }
     // 全局点击时，自动关闭 操作菜单
     this.documentClickFn = e => {
       if (this.lastControlEle)

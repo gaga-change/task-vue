@@ -6,7 +6,15 @@ axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   return response;
 }, function (error) {
-  alert(error.response.data)
+  if (error.response.data === 'GO_LOGIN') {
+    if (window.GO_LOGIN) {
+      window.GO_LOGIN()
+    } else {
+      location.href = '/login'
+    }
+  } else {
+    alert(error.response.data)
+  }
   // 对响应错误做点什么
   return Promise.reject(error);
 });
@@ -15,7 +23,7 @@ export default {
   /** 登入 */
   login: params => axios.post(`${base}/user/login`, params),
   /** 注册 */
-  register: params => axios.post(`${base}/user`, params),
+  register: params => axios.post(`${base}/user/register`, params),
   /** 获取当前登入用户 */
   currentUser: params => axios.get(`${base}/user/current`, params),
   /** 退出登入 */
