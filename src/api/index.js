@@ -43,7 +43,9 @@ export default {
   /** 删除任务 */
   deleteTask: (params, listId, taskId) => axios.delete(`${base}/list/${listId}/task/${taskId}`, params),
   /** 修改任务 */
-  modifyTask: (params, listId, taskId) => axios.put(`${base}/list/${listId}/task/${taskId}`, params),
+  updateTask: (params, listId, taskId) => axios.put(`${base}/list/${listId}/task/${taskId}`, params),
+  /** 修改任务 */
+  modifyTask: (params, listId, taskId) => axios.patch(`${base}/list/${listId}/task/${taskId}`, params),
   /** 查询任务（指定清单） */
   findTask: (params, listId) => axios.get(`${base}/list/${listId}/task`, {params}),
   /** 查询任务（单个） */

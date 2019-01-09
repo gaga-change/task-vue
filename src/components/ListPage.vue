@@ -11,6 +11,8 @@
       <ul class="task-list-ul" v-if="taskArr">
         <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" :class="{'active': checkTask && checkTask._id === item._id}">
           <a href="JavaScript:void(0)" @click="checkouTask(item)">
+            <input class="task-checkbox" type="checkbox" @click.stop="closeTask($event, item)" 
+            v-model="item.close">
             <input class="task-name-ipt" type="text" v-model="item.name" @change="taskNameChange(item)" @input="taskNameInput(item)" @keyup.enter="blur($event)">
             <!-- <span v-text="item.name"></span> -->
             <i class="list-control-btn" @click.stop="showControl($event)">操作</i>
@@ -98,6 +100,11 @@ export default {
       } else {
         controlEle.addClass('d-none')
       }
+    },
+    /** 关闭或开启任务 */
+    closeTask(e, item) {
+      var close = e.target.checked
+      api.modifyTask({close}, this.listId, item._id)  
     },
     /** 切换任务 */
     checkouTask(item) {
@@ -222,6 +229,11 @@ export default {
       background: none;
       outline: none;
       cursor: pointer;
+    }
+    // 多选框
+    .task-checkbox {
+      height: 36px;
+      margin-right: 5px;
     }
     & > li {
       cursor: pointer;
