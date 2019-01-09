@@ -79,6 +79,7 @@ export default {
     }
   },
   created() {
+    this.initData()
     window.GO_LOGIN = () => {
       this.$router.push({ name: "LoginPage" })
     }
