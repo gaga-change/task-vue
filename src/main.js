@@ -18,6 +18,7 @@ Vue.use(Checkbox)
 Vue.use(Input)
 
 Vue.prototype.$message = Message;
+window.$message = Message
 
 Vue.config.productionTip = false
 

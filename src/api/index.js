@@ -13,7 +13,11 @@ axios.interceptors.response.use(function (response) {
       location.href = '/login'
     }
   } else {
-    alert(error.response.data)
+    window.$message({
+      type: 'warning',
+      showClose: true,
+      message: error.response.data
+    })
   }
   // 对响应错误做点什么
   return Promise.reject(error);
@@ -35,9 +39,13 @@ export default {
   /** 修改清单 */
   modifyList: (params, listId) => axios.put(`${base}/list/${listId}`, params),
   /** 查询清单（单个） */
-  findOneList: (params, listId) => axios.get(`${base}/list/${listId}`, {params}),
+  findOneList: (params, listId) => axios.get(`${base}/list/${listId}`, {
+    params
+  }),
   /** 查询清单（多个） */
-  findList: (params) => axios.get(`${base}/list`, {params}),
+  findList: (params) => axios.get(`${base}/list`, {
+    params
+  }),
   /** 添加任务 */
   createTask: (params, listId) => axios.post(`${base}/list/${listId}/task`, params),
   /** 删除任务 */
@@ -47,7 +55,11 @@ export default {
   /** 修改任务 */
   modifyTask: (params, listId, taskId) => axios.patch(`${base}/list/${listId}/task/${taskId}`, params),
   /** 查询任务（指定清单） */
-  findTask: (params, listId) => axios.get(`${base}/list/${listId}/task`, {params}),
+  findTask: (params, listId) => axios.get(`${base}/list/${listId}/task`, {
+    params
+  }),
   /** 查询任务（单个） */
-  findOneTask: (params, listId, taskId) => axios.get(`${base}/list/${listId}/task/${taskId}`, {params}),
+  findOneTask: (params, listId, taskId) => axios.get(`${base}/list/${listId}/task/${taskId}`, {
+    params
+  }),
 }

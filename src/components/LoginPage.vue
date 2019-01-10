@@ -84,7 +84,10 @@ export default {
 				password: this.password
 			}).then(res => {
 				this.state = this.LOGIN
-				alert('注册成功')
+				this.$message({
+					type: 'success',
+					message: '注册成功'
+				})
 			})
 		}
 	}
