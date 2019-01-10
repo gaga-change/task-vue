@@ -8,9 +8,15 @@
       <div class="new-task-area">
         <input class="new-task-ipt" type="text" placeholder='添加任务至"任务列表"，回车即可保存' v-model="newTask.name" @keyup.enter="addTask">
       </div>
-      <ul class="task-list-ul" v-if="taskArr">
-        <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" :class="{'active': checkTask && checkTask._id === item._id}">
+      <transition-group name="flip-list" tag="ul" class="task-list-ul" v-if="taskArr">
+      <!-- <ul class="task-list-ul" v-if="taskArr"> -->
+        <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" 
+        :class="{
+          'active': checkTask && checkTask._id === item._id,
+          'closed': item.close 
+          }">
           <a href="JavaScript:void(0)" @click="checkouTask(item)">
+            <div class="task-line"></div>
             <input class="task-checkbox" type="checkbox" @click.stop="closeTask($event, item)" 
             v-model="item.close">
             <input class="task-name-ipt" type="text" v-model="item.name" @change="taskNameChange(item)" @input="taskNameInput(item)" @keyup.enter="blur($event)">
@@ -21,7 +27,8 @@
             <button class="btn btn-sm btn-outline-warning" @click.stop="deleteTask(item, index)">删除</button>
           </div>
         </li>
-      </ul>
+      <!-- </ul> -->
+      </transition-group>
     </div>
     <!-- 任务详情 -->
     <div class="detail-area">
@@ -41,6 +48,7 @@ export default {
       newTask: {
         name: ''
       },
+      date: null, // 时间，系统时间
       taskArr: null
     }
   },
@@ -80,8 +88,43 @@ export default {
     initData() {
       if (!this.listId) return
       api.findTask({}, this.listId).then(res => {
+        this.timerRun(res.headers.date)
         this.taskArr = res.data
       })
+    },
+    /** 计时器 */
+    timerRun(sysDate) {
+      let sysTime = new Date(sysDate).getTime()
+      this.date = new Date(sysDate)
+      let dateStamp = Date.now()
+      setInterval(() => {
+        this.date = new Date(sysTime + (Date.now() - dateStamp))
+      }, 1000)
+    },
+    /** 任务排序 */
+    sortTaskArr() {
+      this.taskArr.sort((a, b) => {
+        let res = null
+        a.closeAt = _(a.closeAt)
+        b.closeAt = _(b.closeAt)
+        a.createAt = _(a.createAt)
+        b.createAt = _(b.createAt)
+
+        if (a.close != b.close) {
+          res = !b.close
+        } else if (a.closeAt != b.closeAt) {
+          res=  b.closeAt - a.closeAt
+        } else {
+          res = b.createAt - a.createAt
+        }
+        return res
+      })
+      function _(date) {
+        if (date) {
+          return new Date(date).getTime()
+        }
+        return date
+     }
     },
     /** 使当前元素失去焦点 */
     blur(e) {
@@ -105,8 +148,11 @@ export default {
     closeTask(e, item) {
       var close = e.target.checked
       var closeAt = close ? 'SYS_TIME' : null
+      item.closeAt = close ? this.date : null
+      item.close = close
+      this.sortTaskArr()
       api.modifyTask({close, closeAt}, this.listId, item._id).then(res => {
-        item.closeAt = res.closeAt
+        item.closeAt = res.data.closeAt
       })
     },
     /** 切换任务 */
@@ -149,6 +195,9 @@ export default {
 </script>
 
 <style lang="less">
+.flip-list-move {
+  transition: transform .5s;
+}
 .list-page {
   .list-area {
     position: absolute;
@@ -238,15 +287,31 @@ export default {
       height: 36px;
       margin-right: 5px;
     }
+    // 任务分割线
+    .task-line {
+      position: absolute;
+      left: 23px;
+      right: 23px;
+      bottom: 0;
+      height: 1px;
+      background-color: rgba(0,0,0,.08);
+    }
     & > li {
       cursor: pointer;
       &.active {
         background-color: #f3f3f3;
       }
+      &.closed {
+        color: rgba(0,0,0,.24);
+        a, input {
+          color: inherit;
+        }
+      }
       &:hover {
         background-color: rgba(243, 243, 243, 0.5);
       }
       & > a {
+        position: relative;
         display: flex;
         height: 36px;
         line-height: 36px;
