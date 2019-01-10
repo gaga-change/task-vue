@@ -5,14 +5,12 @@
       <div class="list-header">
         <h2 class="header-name">任务列表</h2>
       </div>
-      <div class="new-task-area">
-        <input
-          class="new-task-ipt"
-          type="text"
-          placeholder='添加任务至"任务列表"，回车即可保存'
+      <div class="new-task-area" @keyup.enter="addTask">
+        <el-input
           v-model="newTask.name"
-          @keyup.enter="addTask"
-        >
+          placeholder='添加任务至"任务列表"，回车即可保存'
+          maxlength="100"
+        ></el-input>
       </div>
       <transition-group
         name="flip-list"
@@ -291,20 +289,6 @@ export default {
   .new-task-area {
     padding: 0 16px;
     margin: 10px 0;
-    .new-task-ipt {
-      display: block;
-      height: 36px;
-      width: 100%;
-      padding: 0 10px;
-      font-size: 14px;
-      border: 1px solid rgba(0, 0, 0, 0.14);
-      outline: 0;
-      border-radius: 2px;
-      color: #C0C4CC;
-      &:focus {
-        border-color: #617fde;
-      }
-    }
   }
   .task-list-ul {
     list-style: none;

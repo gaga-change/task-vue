@@ -7,13 +7,15 @@ import {
   DropdownMenu,
   DropdownItem,
   Message,
-  Checkbox
-} from 'element-ui';
+  Checkbox,
+  Input
+} from 'element-ui'
 
-Vue.use(Dropdown);
-Vue.use(DropdownMenu);
-Vue.use(DropdownItem);
-Vue.use(Checkbox);
+Vue.use(Dropdown)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
+Vue.use(Checkbox)
+Vue.use(Input)
 
 Vue.prototype.$message = Message;
 
