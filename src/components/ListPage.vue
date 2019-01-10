@@ -35,12 +35,12 @@
             @click="checkouTask(item)"
           >
             <div class="task-line"></div>
-            <input
-              class="task-checkbox"
-              type="checkbox"
-              @click.stop="closeTask($event, item)"
-              v-model="item.close"
-            >
+            <span @click.stop="closeTask($event, item)">
+              <el-checkbox
+                class="task-checkbox"
+                v-model="item.close"
+              ></el-checkbox>
+            </span>
             <input
               class="task-name-ipt"
               type="text"
@@ -231,8 +231,10 @@ export default {
 
 <style lang="less">
 .el-dropdown-link {
+  display: block;
   cursor: pointer;
-  color: #409eff;
+  // color: #409eff;
+  color: rgba(0, 0, 0, 0.24);
 }
 .el-icon-arrow-down {
   font-size: 12px;
@@ -298,6 +300,7 @@ export default {
       border: 1px solid rgba(0, 0, 0, 0.14);
       outline: 0;
       border-radius: 2px;
+      color: #C0C4CC;
       &:focus {
         border-color: #617fde;
       }
@@ -317,8 +320,13 @@ export default {
     }
     // 多选框
     .task-checkbox {
+      position: relative;
+      top: -1px;
       height: 36px;
-      margin-right: 5px;
+      margin: 0 5px 0 0;
+      .el-checkbox__inner:hover {
+        // border-color: #dcdfe6;
+      }
     }
     // 任务分割线
     .task-line {
@@ -340,9 +348,21 @@ export default {
         input {
           color: inherit;
         }
+        .task-checkbox {
+          .el-checkbox__inner {
+            background-color: #fff;
+            border-color: #dcdfe6;
+            &::after {
+              border-color: #dcdfe6;
+            }
+          }
+        }
       }
       &:hover {
         background-color: rgba(243, 243, 243, 0.5);
+        .el-dropdown-link {
+          // display: block;
+        }
       }
       & > a {
         position: relative;

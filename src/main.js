@@ -6,12 +6,14 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Message
+  Message,
+  Checkbox
 } from 'element-ui';
 
 Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
+Vue.use(Checkbox);
 
 Vue.prototype.$message = Message;
 
