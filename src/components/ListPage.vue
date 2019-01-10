@@ -51,7 +51,18 @@
               <span class="el-dropdown-link ">
                 <i class="el-icon-more el-icon--right"></i>
               </span>
-              <el-dropdown-menu slot="dropdown">
+              <el-dropdown-menu slot="dropdown" >
+                <!-- <el-dropdown-item :command="{type: 'del', item, index}">
+                  <div>
+                    <span>优先级</span>
+                    <ul>
+                      <li>!!!</li>
+                      <li>!!</li>
+                      <li>!</li>
+                      <li>!!!</li>
+                    </ul>
+                  </div>
+                </el-dropdown-item> -->
                 <el-dropdown-item :command="{type: 'del', item, index}">删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
