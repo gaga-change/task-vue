@@ -104,7 +104,7 @@ export default {
     /** 关闭或开启任务 */
     closeTask(e, item) {
       var close = e.target.checked
-      api.modifyTask({close}, this.listId, item._id)  
+      api.modifyTask({close}, this.listId, item._id)
     },
     /** 切换任务 */
     checkouTask(item) {
@@ -132,7 +132,7 @@ export default {
     addTask() {
       api.createTask(this.newTask, this.listId).then(res => {
         this.newTask.name = ''
-        this.taskArr.push(res.data)
+        this.taskArr.unshift(res.data)
       })
     },
     /** 删除清单 */
