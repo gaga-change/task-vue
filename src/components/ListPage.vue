@@ -212,9 +212,17 @@ export default {
     },
     /** 添加任务 */
     addTask () {
-      api.createTask(this.newTask, this.listId).then(res => {
-        this.newTask.name = ''
-        this.taskArr.unshift(res.data)
+      let task = {
+        _id: window.uuid(),
+        name: this.newTask.name,
+        close: false,
+        closeAt: null,
+        createAt: this.date,
+        content: ''
+      }
+      this.newTask.name = ''
+      this.taskArr.unshift(task)
+      api.createTask(task, this.listId).then(res => {
       })
     },
     /** 删除清单 */
