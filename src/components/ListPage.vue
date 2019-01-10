@@ -104,7 +104,10 @@ export default {
     /** 关闭或开启任务 */
     closeTask(e, item) {
       var close = e.target.checked
-      api.modifyTask({close}, this.listId, item._id)
+      var closeAt = close ? 'SYS_TIME' : null
+      api.modifyTask({close, closeAt}, this.listId, item._id).then(res => {
+        item.closeAt = res.closeAt
+      })
     },
     /** 切换任务 */
     checkouTask(item) {
