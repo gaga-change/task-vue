@@ -2,11 +2,20 @@
   <div class="task-page">
     <div class="title-area">
       <h2 class="task-name">
-        <input type="text" v-model="task.name" @change="taskContentChange(task)"  @input="taskNameInput(task)">
+        <input
+          type="text"
+          v-model="task.name"
+          @change="taskContentChange(task)"
+          @input="taskNameInput(task)"
+        >
       </h2>
     </div>
     <div class="content-area">
-      <textarea v-model="task.content" placeholder="描述" @change="taskContentChange(task)"></textarea>
+      <textarea
+        v-model="task.content"
+        placeholder="描述"
+        @change="taskContentChange(task)"
+      ></textarea>
     </div>
   </div>
 </template>
@@ -14,7 +23,7 @@
 <script>
 import api from '../api'
 export default {
-  data() {
+  data () {
     return {
       taskId: null,
       listId: null,
@@ -25,43 +34,43 @@ export default {
     }
   },
   computed: {
-    newTaskName() {
+    newTaskName () {
       return this.$store.state.inputTaskName
     }
   },
   watch: {
-    newTaskName(val, oldVal) {
+    newTaskName (val, oldVal) {
       this.task.name = val
     }
   },
-  created() {
+  created () {
     this.update(this.$route.params)
   },
   // 路由更新钩子
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     this.update(to.params)
     next()
   },
   methods: {
     /** 路由更新 */
-    update(params) {
+    update (params) {
       this.taskId = params.taskId
       this.listId = params.listId
       this.initData()
     },
     /** 数据初始化 */
-    initData() {
+    initData () {
       if (!this.taskId || !this.listId) return
       api.findOneTask({}, this.listId, this.taskId).then(res => {
         this.task = res.data
       })
     },
     /** 任务名称修改事件 */
-    taskNameInput(item) {
+    taskNameInput (item) {
       this.$store.commit('changeInputTaskName', item.name)
     },
     /** 任务名称修改 */
-    taskContentChange(item) {
+    taskContentChange (item) {
       api.modifyTask(item, this.listId, this.taskId).then(res => {
         console.log('res: ', res)
       })

@@ -49,18 +49,15 @@
               @input="taskNameInput(item)"
               @keyup.enter="blur($event)"
             >
-            <!-- <span v-text="item.name"></span> -->
-            <i
-              class="list-control-btn"
-              @click.stop="showControl($event)"
-            >操作</i>
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link ">
+                <i class="el-icon-more el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{type: 'del', item, index}">删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </a>
-          <div class="list-control d-none">
-            <button
-              class="btn btn-sm btn-outline-warning"
-              @click.stop="deleteTask(item, index)"
-            >删除</button>
-          </div>
         </li>
         <!-- </ul> -->
       </transition-group>
@@ -127,6 +124,13 @@ export default {
         this.taskArr = res.data
       })
     },
+    handleCommand (command) {
+      console.log(command)
+      if (command.type === 'del') {
+        this.deleteTask(command.item, command.index)
+      }
+      // this.$message('click on item ' + command);
+    },
     /** 计时器 */
     timerRun (sysDate) {
       let sysTime = new Date(sysDate).getTime()
@@ -165,20 +169,6 @@ export default {
     /** 使当前元素失去焦点 */
     blur (e) {
       e.target.blur()
-    },
-    // 显示清单“操作”菜单
-    showControl (e) {
-      let target = $(e.target)
-      let controlEle = target.closest('a').siblings('.list-control')
-      if (controlEle.hasClass('d-none')) {
-        if (this.lastControlEle) {
-          this.lastControlEle.addClass('d-none')
-        }
-        controlEle.removeClass('d-none')
-        this.lastControlEle = controlEle
-      } else {
-        controlEle.addClass('d-none')
-      }
     },
     /** 关闭或开启任务 */
     closeTask (e, item) {
@@ -229,6 +219,10 @@ export default {
     deleteTask (item, index) {
       api.deleteTask({}, this.listId, item._id).then(res => {
         this.taskArr.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除任务成功'
+        })
       })
     },
   }
@@ -236,8 +230,18 @@ export default {
 </script>
 
 <style lang="less">
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
 .flip-list-move {
   transition: transform 0.5s;
+}
+.dir-list {
+  font-size: 14px;
 }
 .list-page {
   .list-area {
@@ -302,25 +306,13 @@ export default {
   .task-list-ul {
     list-style: none;
     padding: 0;
-    // “操作” 按钮
-    .list-control-btn {
-      float: right;
-      font-size: 12px;
-      font-style: normal;
-    }
-    // 操作域
-    .list-control {
-      padding: 0 20px;
-      .btn {
-        font-size: 12px;
-      }
-    }
     // 任务列表 输入框
     .task-name-ipt {
       flex: 1;
       border: none;
       background: none;
       outline: none;
+      font-size: 14px;
       cursor: pointer;
     }
     // 多选框

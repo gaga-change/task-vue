@@ -2,6 +2,18 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import { 
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  Message
+} from 'element-ui';
+
+Vue.use(Dropdown);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
+
+Vue.prototype.$message = Message;
 
 Vue.config.productionTip = false
 

@@ -16,5 +16,14 @@ body,
 html {
   height: 100%
 }
+.el-message {
+  top: unset;
+  bottom: 20px;
+}
+.el-message-fade-enter,.el-message-fade-leave-active {
+    opacity: 0;
+    -webkit-transform: translate(-50%,100%);
+    transform: translate(-50%,100%)
+}
 </style>
 
