@@ -6,28 +6,63 @@
         <h2 class="header-name">任务列表</h2>
       </div>
       <div class="new-task-area">
-        <input class="new-task-ipt" type="text" placeholder='添加任务至"任务列表"，回车即可保存' v-model="newTask.name" @keyup.enter="addTask">
+        <input
+          class="new-task-ipt"
+          type="text"
+          placeholder='添加任务至"任务列表"，回车即可保存'
+          v-model="newTask.name"
+          @keyup.enter="addTask"
+        >
       </div>
-      <transition-group name="flip-list" tag="ul" class="task-list-ul" v-if="taskArr">
-      <!-- <ul class="task-list-ul" v-if="taskArr"> -->
-        <li v-for="(item, index) in taskArr" :key="item._id" :data-index="index" 
-        :class="{
+      <transition-group
+        name="flip-list"
+        tag="ul"
+        class="task-list-ul"
+        v-if="taskArr"
+      >
+        <!-- <ul class="task-list-ul" v-if="taskArr"> -->
+        <li
+          v-for="(item, index) in taskArr"
+          :key="item._id"
+          :data-index="index"
+          :class="{
           'active': checkTask && checkTask._id === item._id,
           'closed': item.close 
-          }">
-          <a href="JavaScript:void(0)" @click="checkouTask(item)">
+          }"
+        >
+          <a
+            href="JavaScript:void(0)"
+            @click="checkouTask(item)"
+          >
             <div class="task-line"></div>
-            <input class="task-checkbox" type="checkbox" @click.stop="closeTask($event, item)" 
-            v-model="item.close">
-            <input class="task-name-ipt" type="text" v-model="item.name" @change="taskNameChange(item)" @input="taskNameInput(item)" @keyup.enter="blur($event)">
+            <input
+              class="task-checkbox"
+              type="checkbox"
+              @click.stop="closeTask($event, item)"
+              v-model="item.close"
+            >
+            <input
+              class="task-name-ipt"
+              type="text"
+              v-model="item.name"
+              @change="taskNameChange(item)"
+              @input="taskNameInput(item)"
+              @keyup.enter="blur($event)"
+            >
             <!-- <span v-text="item.name"></span> -->
-            <i class="list-control-btn" @click.stop="showControl($event)">操作</i>
+            <i
+              class="list-control-btn"
+              @click.stop="showControl($event)"
+            >操作</i>
           </a>
           <div class="list-control d-none">
-            <button class="btn btn-sm btn-outline-warning" @click.stop="deleteTask(item, index)">删除</button>
+            <button
+              class="btn btn-sm btn-outline-warning"
+              @click.stop="deleteTask(item, index)"
+            >删除</button>
           </div>
         </li>
-      <!-- </ul> -->
+        <!-- </ul> -->
       </transition-group>
     </div>
     <!-- 任务详情 -->
@@ -41,7 +76,7 @@
 <script>
 import api from '../api'
 export default {
-  data() {
+  data () {
     return {
       listId: null,
       checkTask: null,
@@ -53,16 +88,16 @@ export default {
     }
   },
   computed: {
-    newTaskName() {
+    newTaskName () {
       return this.$store.state.inputTaskName
     }
   },
   watch: {
-    newTaskName(val, oldVal) {
+    newTaskName (val, oldVal) {
       this.checkTask.name = val
     }
   },
-  created() {
+  created () {
     // 获取链接中的清单ID
     this.listId = this.$route.params.listId
     this.initData()
@@ -73,10 +108,10 @@ export default {
     }
     $(document).on('click', this.documentClickFn)
   },
-  destroyed() {
+  destroyed () {
     $(document).off('click', this.documentClickFn)
   },
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     // 子页面路由更新 不监听
     if (to.name === 'TaskPage') return next()
     this.listId = to.params.listId
@@ -85,7 +120,7 @@ export default {
   },
   methods: {
     /** 数据初始化 */
-    initData() {
+    initData () {
       if (!this.listId) return
       api.findTask({}, this.listId).then(res => {
         this.timerRun(res.headers.date)
@@ -93,17 +128,18 @@ export default {
       })
     },
     /** 计时器 */
-    timerRun(sysDate) {
+    timerRun (sysDate) {
       let sysTime = new Date(sysDate).getTime()
       this.date = new Date(sysDate)
-      let dateStamp = Date.now()
       setInterval(() => {
-        this.date = new Date(sysTime + (Date.now() - dateStamp))
+        setTimeout(() => {
+          this.date = new Date(this.date.getTime() + 1000)
+        }, 0)
       }, 1000)
     },
     /** 任务排序 */
-    sortTaskArr() {
-      this.taskArr.sort((a, b) => {
+    sortTaskArr () {
+      this.taskArr.mySort((a, b) => {
         let res = null
         a.closeAt = _(a.closeAt)
         b.closeAt = _(b.closeAt)
@@ -111,27 +147,27 @@ export default {
         b.createAt = _(b.createAt)
 
         if (a.close != b.close) {
-          res = !b.close
+          res = a.close - b.close > -1
         } else if (a.closeAt != b.closeAt) {
-          res=  b.closeAt - a.closeAt
+          res = b.closeAt - a.closeAt > 0
         } else {
-          res = b.createAt - a.createAt
+          res = b.createAt - a.createAt > 0
         }
         return res
       })
-      function _(date) {
+      function _ (date) {
         if (date) {
           return new Date(date).getTime()
         }
         return date
-     }
+      }
     },
     /** 使当前元素失去焦点 */
-    blur(e) {
+    blur (e) {
       e.target.blur()
     },
     // 显示清单“操作”菜单
-    showControl(e) {
+    showControl (e) {
       let target = $(e.target)
       let controlEle = target.closest('a').siblings('.list-control')
       if (controlEle.hasClass('d-none')) {
@@ -145,18 +181,17 @@ export default {
       }
     },
     /** 关闭或开启任务 */
-    closeTask(e, item) {
+    closeTask (e, item) {
       var close = e.target.checked
-      var closeAt = close ? 'SYS_TIME' : null
-      item.closeAt = close ? this.date : null
+      var closeAt = close ? new Date(this.date) : null
+      item.closeAt = closeAt
       item.close = close
+
       this.sortTaskArr()
-      api.modifyTask({close, closeAt}, this.listId, item._id).then(res => {
-        item.closeAt = res.data.closeAt
-      })
+      api.modifyTask({ close, closeAt }, this.listId, item._id)
     },
     /** 切换任务 */
-    checkouTask(item) {
+    checkouTask (item) {
       if (!item) return
       this.checkTask = item
       this.$router.push({
@@ -168,24 +203,22 @@ export default {
       })
     },
     /** 任务名称修改事件 */
-    taskNameInput(item) {
+    taskNameInput (item) {
       this.$store.commit('changeInputTaskName', item.name)
     },
     /** 任务名称修改 */
-    taskNameChange(item) {
-      api.modifyTask({name: item.name}, this.listId, item._id).then(res => {
-        console.log('res: ', res)
-      })
+    taskNameChange (item) {
+      api.modifyTask({ name: item.name }, this.listId, item._id)
     },
     /** 添加任务 */
-    addTask() {
+    addTask () {
       api.createTask(this.newTask, this.listId).then(res => {
         this.newTask.name = ''
         this.taskArr.unshift(res.data)
       })
     },
     /** 删除清单 */
-    deleteTask(item, index) {
+    deleteTask (item, index) {
       api.deleteTask({}, this.listId, item._id).then(res => {
         this.taskArr.splice(index, 1)
       })
@@ -196,7 +229,7 @@ export default {
 
 <style lang="less">
 .flip-list-move {
-  transition: transform .5s;
+  transition: transform 0.5s;
 }
 .list-page {
   .list-area {
@@ -294,7 +327,7 @@ export default {
       right: 23px;
       bottom: 0;
       height: 1px;
-      background-color: rgba(0,0,0,.08);
+      background-color: rgba(0, 0, 0, 0.08);
     }
     & > li {
       cursor: pointer;
@@ -302,8 +335,9 @@ export default {
         background-color: #f3f3f3;
       }
       &.closed {
-        color: rgba(0,0,0,.24);
-        a, input {
+        color: rgba(0, 0, 0, 0.24);
+        a,
+        input {
           color: inherit;
         }
       }
