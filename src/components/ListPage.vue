@@ -2,57 +2,60 @@
   <div class="list-page">
     <!-- 任务列表 -->
     <div class="list-area">
-      <div class="list-header">
-        <h2 class="header-name">任务列表</h2>
-      </div>
-      <div class="new-task-area" @keyup.enter="addTask">
-        <el-input
-          v-model="newTask.name"
-          placeholder='添加任务至"任务列表"，回车即可保存'
-          maxlength="100"
-        ></el-input>
-      </div>
-      <transition-group
-        name="flip-list"
-        tag="ul"
-        class="task-list-ul"
-        v-if="taskArr"
-      >
-        <!-- <ul class="task-list-ul" v-if="taskArr"> -->
-        <li
-          v-for="(item, index) in taskArr"
-          :key="item._id"
-          :data-index="index"
-          :class="{
+      <div class="task-list-area">
+        <div class="list-header">
+          <h2 class="header-name">任务列表</h2>
+        </div>
+        <div
+          class="new-task-area"
+          @keyup.enter="addTask"
+        >
+          <el-input
+            v-model="newTask.name"
+            placeholder='添加任务至"任务列表"，回车即可保存'
+            maxlength="100"
+          ></el-input>
+        </div>
+        <div class="task-list-content">
+          <el-scrollbar style="height: 100%;">
+            <transition-group
+              name="flip-list"
+              tag="ul"
+              class="task-list-ul"
+              v-if="taskArr"
+            >
+              <!-- <ul class="task-list-ul" v-if="taskArr"> -->
+              <li
+                v-for="(item, index) in taskArr"
+                :key="item._id"
+                :data-index="index"
+                :class="{
           'active': checkTask && checkTask._id === item._id,
           'closed': item.close 
           }"
-        >
-          <a
-            href="JavaScript:void(0)"
-            @click="checkouTask(item)"
-          >
-            <div class="task-line"></div>
-            <span @click.stop="closeTask($event, item)">
-              <el-checkbox
-                class="task-checkbox"
-                v-model="item.close"
-              ></el-checkbox>
-            </span>
-            <input
-              class="task-name-ipt"
-              type="text"
-              v-model="item.name"
-              @change="taskNameChange(item)"
-              @input="taskNameInput(item)"
-              @keyup.enter="blur($event)"
-            >
-            <el-dropdown @command="handleCommand">
-              <span class="el-dropdown-link ">
-                <i class="el-icon-more el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown" >
-                <!-- <el-dropdown-item :command="{type: 'del', item, index}">
+              >
+                <a @click="checkouTask(item)">
+                  <div class="task-line"></div>
+                  <span @click.stop="closeTask($event, item)">
+                    <el-checkbox
+                      class="task-checkbox"
+                      v-model="item.close"
+                    ></el-checkbox>
+                  </span>
+                  <input
+                    class="task-name-ipt"
+                    type="text"
+                    v-model="item.name"
+                    @change="taskNameChange(item)"
+                    @input="taskNameInput(item)"
+                    @keyup.enter="blur($event)"
+                  >
+                  <el-dropdown @command="handleCommand">
+                    <span class="el-dropdown-link ">
+                      <i class="el-icon-more el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <!-- <el-dropdown-item :command="{type: 'del', item, index}">
                   <div>
                     <span>优先级</span>
                     <ul>
@@ -63,19 +66,21 @@
                     </ul>
                   </div>
                 </el-dropdown-item> -->
-                <el-dropdown-item :command="{type: 'del', item, index}">删除</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </a>
-        </li>
-        <!-- </ul> -->
-      </transition-group>
+                      <el-dropdown-item :command="{type: 'del', item, index}">删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </a>
+              </li>
+              <!-- </ul> -->
+            </transition-group>
+          </el-scrollbar>
+        </div>
+      </div>
     </div>
     <!-- 任务详情 -->
     <div class="detail-area">
       <router-view></router-view>
     </div>
-    <!-- 任务详情 -->
   </div>
 </template>
 
@@ -259,7 +264,20 @@ export default {
     position: absolute;
     width: 64%;
     right: 36%;
+    top: 0;
+    bottom: 0;
     padding-left: 260px;
+    .task-list-area {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+    }
+    .task-list-content {
+          position: absolute;
+    width: 100%;
+    top: 110px;
+    bottom: 0;
+    }
     @media (max-width: 1020px) {
       padding-left: 0;
     }
