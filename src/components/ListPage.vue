@@ -273,10 +273,10 @@ export default {
       overflow: hidden;
     }
     .task-list-content {
-          position: absolute;
-    width: 100%;
-    top: 110px;
-    bottom: 0;
+      position: absolute;
+      width: 100%;
+      top: 110px;
+      bottom: 0;
     }
     @media (max-width: 1020px) {
       padding-left: 0;
@@ -337,9 +337,9 @@ export default {
       top: -1px;
       height: 36px;
       margin: 0 5px 0 0;
-      .el-checkbox__inner:hover {
-        // border-color: #dcdfe6;
-      }
+      // .el-checkbox__inner:hover {
+      // border-color: #dcdfe6;
+      // }
     }
     // 任务分割线
     .task-line {
@@ -373,9 +373,9 @@ export default {
       }
       &:hover {
         background-color: rgba(243, 243, 243, 0.5);
-        .el-dropdown-link {
-          // display: block;
-        }
+        // .el-dropdown-link {
+        // display: block;
+        // }
       }
       & > a {
         position: relative;
