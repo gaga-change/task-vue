@@ -46,6 +46,8 @@ export default {
   findList: (params) => axios.get(`${base}/list`, {
     params
   }),
+  /** 查询清单 含所有 未完成的任务 */
+  findListAndTask: () => axios.get(`${base}/list/andNoCloseTask`),
   /** 添加任务 */
   createTask: (params, listId) => axios.post(`${base}/list/${listId}/task`, params),
   /** 删除任务 */
