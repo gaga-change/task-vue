@@ -3,7 +3,7 @@
 		<div class="bg"></div>
 		<div class="container">
 			<!-- 头部 -->
-			<h1 class="text-center title">我的清单[内测]</h1>
+			<h1 class="text-center title">我的清单</h1>
 			<!-- 主内容 -->
 			<div class="row">
 				<div class="col">
