@@ -56,6 +56,8 @@ export default {
   updateTask: (params, listId, taskId) => axios.put(`${base}/list/${listId}/task/${taskId}`, params),
   /** 修改任务 */
   modifyTask: (params, listId, taskId) => axios.patch(`${base}/list/${listId}/task/${taskId}`, params),
+  /** 修改任务状态 */
+  switchTask: (params, listId, taskId) => axios.post(`${base}/list/${listId}/task/${taskId}/switch`, params),
   /** 查询任务（指定清单） */
   findTask: (params, listId) => axios.get(`${base}/list/${listId}/task`, {
     params
