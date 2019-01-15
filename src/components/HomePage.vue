@@ -144,7 +144,7 @@ export default {
     },
     /** 获取清单列表 */
     findList() {
-      api.findListAndTask().then(res => {
+      api.findList().then(res => {
         this.listArr.push(...res.data)
         // 根据路由还原指定 清单
         if (this.params.listId) {
