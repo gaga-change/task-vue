@@ -181,6 +181,7 @@ export default {
     },
     /** 关闭或开启任务 */
     closeTask (e, item) {
+      if (e.target.type !== 'checkbox') return
       var close = e.target.checked
       var closeAt = close ? new Date(this.date) : null
       item.closeAt = closeAt
