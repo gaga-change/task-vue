@@ -193,7 +193,7 @@ export default {
       item.close = close
 
       this.sortTaskArr()
-      api.modifyTask({ close, closeAt }, this.listId, item._id)
+      api.switchTask(item, this.listId, item._id)
     },
     /** 切换任务 */
     checkouTask (item) {
