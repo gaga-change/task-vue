@@ -95,7 +95,8 @@ export default {
         name: ''
       },
       date: null, // 时间，系统时间
-      taskArr: null
+      taskArr: null,
+      taskCloseArr: null, // 已关闭任务
     }
   },
   computed: {
@@ -133,9 +134,10 @@ export default {
     /** 数据初始化 */
     initData () {
       if (!this.listId) return
-      api.findTask({}, this.listId).then(res => {
+      api.findTask2({pageSize: 5}, this.listId).then(res => {
         this.timerRun(res.headers.date)
-        this.taskArr = res.data
+        this.taskArr = res.data.task
+        this.taskCloseArr = res.data.task2
       })
     },
     handleCommand (command) {

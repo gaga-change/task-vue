@@ -62,6 +62,10 @@ export default {
   findTask: (params, listId) => axios.get(`${base}/list/${listId}/task`, {
     params
   }),
+  /** 查询任务（清单下所有未完成任务，以及n条已完成任务） */
+  findTask2: (params, listId) => axios.get(`${base}/list/${listId}/task2`, {
+    params
+  }),
   /** 查询任务（单个） */
   findOneTask: (params, listId, taskId) => axios.get(`${base}/list/${listId}/task/${taskId}`, {
     params
