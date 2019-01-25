@@ -36,7 +36,7 @@
               >
                 <a @click="checkouTask(item)">
                   <div class="task-line"></div>
-                  <span @click.stop="closeTask($event, item)">
+                  <span @click.stop="closeTask($event, item, index)">
                     <el-checkbox
                       class="task-checkbox"
                       v-model="item.close"
@@ -66,6 +66,54 @@
                     </ul>
                   </div>
                 </el-dropdown-item> -->
+                      <el-dropdown-item :command="{type: 'del', item, index}">删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </a>
+              </li>
+              <!-- </ul> -->
+            </transition-group>
+
+            <div>
+              <h6 style="font-size:12px;padding-left:23px;">已完成</h6>
+            </div>
+            <transition-group
+              name="flip-list"
+              tag="ul"
+              class="task-list-ul"
+              v-if="taskCloseArr"
+            >
+              <!-- <ul class="task-list-ul" v-if="taskArr"> -->
+              <li
+                v-for="(item, index) in taskCloseArr"
+                :key="item._id"
+                :data-index="index"
+                :class="{
+          'active': checkTask && checkTask._id === item._id,
+          'closed': item.close 
+          }"
+              >
+                <a @click="checkouTask(item)">
+                  <div class="task-line"></div>
+                  <span @click.stop="closeTask($event, item)">
+                    <el-checkbox
+                      class="task-checkbox"
+                      v-model="item.close"
+                    ></el-checkbox>
+                  </span>
+                  <input
+                    class="task-name-ipt"
+                    type="text"
+                    v-model="item.name"
+                    @change="taskNameChange(item)"
+                    @input="taskNameInput(item)"
+                    @keyup.enter="blur($event)"
+                  >
+                  <el-dropdown @command="handleCommand">
+                    <span class="el-dropdown-link ">
+                      <i class="el-icon-more el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item :command="{type: 'del', item, index}">删除</el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
@@ -134,14 +182,14 @@ export default {
     /** 数据初始化 */
     initData () {
       if (!this.listId) return
-      api.findTask2({pageSize: 5}, this.listId).then(res => {
+      api.findTask2({ pageSize: 5 }, this.listId).then(res => {
         this.timerRun(res.headers.date)
         this.taskArr = res.data.task
+        this.sortTaskArr()
         this.taskCloseArr = res.data.task2
       })
     },
     handleCommand (command) {
-      console.log(command)
       if (command.type === 'del') {
         this.deleteTask(command.item, command.index)
       }
@@ -187,15 +235,16 @@ export default {
       e.target.blur()
     },
     /** 关闭或开启任务 */
-    closeTask (e, item) {
+    closeTask (e, item, index) {
       if (e.target.type !== 'checkbox') return
-      var close = e.target.checked
-      var closeAt = close ? new Date(this.date) : null
+      let close = e.target.checked
+      let closeAt = close ? new Date(this.date) : null
       item.closeAt = closeAt
       item.close = close
-
-      this.sortTaskArr()
       api.switchTask(item, this.listId, item._id)
+      // 从未完成中删除， 添加到已完成中
+      this.taskArr.splice(index, 1)
+      this.taskCloseArr.unshift(item)
     },
     /** 切换任务 */
     checkouTask (item) {
