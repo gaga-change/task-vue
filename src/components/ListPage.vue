@@ -121,6 +121,12 @@
               </li>
               <!-- </ul> -->
             </transition-group>
+            <a
+              class="load-more"
+              href="JavaScript:void(0)"
+              v-if="havaMore"
+              @click="loadMore()"
+            >加载更多</a>
           </el-scrollbar>
         </div>
       </div>
@@ -145,6 +151,7 @@ export default {
       date: null, // 时间，系统时间
       taskArr: null,
       taskCloseArr: null, // 已关闭任务
+      havaMore: true, // 有未载入的已完成任务
     }
   },
   computed: {
@@ -187,6 +194,18 @@ export default {
         this.taskArr = res.data.task
         this.sortTaskArr()
         this.taskCloseArr = res.data.task2
+      })
+    },
+    /** 加载更多 */
+    loadMore () {
+      api.findClosedTask({
+        skip: this.taskCloseArr.length,
+        limit: 40,
+      }, this.listId).then(res => {
+        this.taskCloseArr.push(...res.data)
+        if (res.data.length != 40) {
+          this.havaMore = false
+        }
       })
     },
     handleCommand (command) {
@@ -378,6 +397,15 @@ export default {
   .new-task-area {
     padding: 0 16px;
     margin: 10px 0;
+  }
+  .load-more {
+    display: block;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.24);
+    text-align: center;
+    &:hover {
+      text-decoration: none;
+    }
   }
   .task-list-ul {
     list-style: none;
