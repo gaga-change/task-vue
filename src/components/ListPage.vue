@@ -196,6 +196,8 @@ export default {
         this.taskCloseArr = res.data.task2
         if (res.data.task2.length == 5) {
           this.havaMore = true
+        } else {
+          this.havaMore = false
         }
       })
     },
