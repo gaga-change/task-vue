@@ -8,7 +8,8 @@ import {
   DropdownItem,
   Message,
   Checkbox,
-  Input
+  Input,
+  Scrollbar
 } from 'element-ui'
 
 Vue.use(Dropdown)
@@ -16,6 +17,7 @@ Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
 Vue.use(Checkbox)
 Vue.use(Input)
+Vue.use(Scrollbar)
 
 Vue.prototype.$message = Message;
 window.$message = Message

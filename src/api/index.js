@@ -46,6 +46,8 @@ export default {
   findList: (params) => axios.get(`${base}/list`, {
     params
   }),
+  /** 查询清单 含所有 未完成的任务 */
+  findListAndTask: () => axios.get(`${base}/list/andNoCloseTask`),
   /** 添加任务 */
   createTask: (params, listId) => axios.post(`${base}/list/${listId}/task`, params),
   /** 删除任务 */
@@ -54,8 +56,18 @@ export default {
   updateTask: (params, listId, taskId) => axios.put(`${base}/list/${listId}/task/${taskId}`, params),
   /** 修改任务 */
   modifyTask: (params, listId, taskId) => axios.patch(`${base}/list/${listId}/task/${taskId}`, params),
+  /** 修改任务状态 */
+  switchTask: (params, listId, taskId) => axios.post(`${base}/list/${listId}/task/${taskId}/switch`, params),
   /** 查询任务（指定清单） */
   findTask: (params, listId) => axios.get(`${base}/list/${listId}/task`, {
+    params
+  }),
+  /** 查询任务（清单下所有未完成任务，以及n条已完成任务） */
+  findTask2: (params, listId) => axios.get(`${base}/list/${listId}/task2`, {
+    params
+  }),
+   /** 查询已完成任务 */
+   findClosedTask: (params, listId) => axios.get(`${base}/list/${listId}/task/closed`, {
     params
   }),
   /** 查询任务（单个） */
