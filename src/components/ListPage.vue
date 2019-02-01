@@ -95,7 +95,7 @@
               >
                 <a @click="checkouTask(item)">
                   <div class="task-line"></div>
-                  <span @click.stop="closeTask($event, item)">
+                  <span @click.stop="closeTask($event, item, index)">
                     <el-checkbox
                       class="task-checkbox"
                       v-model="item.close"
@@ -209,18 +209,16 @@ export default {
     sortTaskArr () {
       this.taskArr.mySort((a, b) => {
         let res = null
-        a.closeAt = _(a.closeAt)
-        b.closeAt = _(b.closeAt)
         a.createAt = _(a.createAt)
         b.createAt = _(b.createAt)
 
-        if (a.close != b.close) {
-          res = a.close - b.close > -1
-        } else if (a.closeAt != b.closeAt) {
-          res = b.closeAt - a.closeAt > 0
-        } else {
-          res = b.createAt - a.createAt > 0
-        }
+        // if (a.close != b.close) {
+        //   res = a.close - b.close > -1
+        // } else if (a.closeAt != b.closeAt) {
+        //   res = b.closeAt - a.closeAt > 0
+        // } else {
+        res = b.createAt - a.createAt > 0
+        // }
         return res
       })
       function _ (date) {
@@ -238,13 +236,19 @@ export default {
     closeTask (e, item, index) {
       if (e.target.type !== 'checkbox') return
       let close = e.target.checked
-      let closeAt = close ? new Date(this.date) : null
-      item.closeAt = closeAt
+      item.closeAt = close ? new Date(this.date) : null
       item.close = close
       api.switchTask(item, this.listId, item._id)
-      // 从未完成中删除， 添加到已完成中
-      this.taskArr.splice(index, 1)
-      this.taskCloseArr.unshift(item)
+      if (close) {
+        // 从未完成中删除， 添加到已完成中
+        this.taskArr.splice(index, 1)
+        this.taskCloseArr.unshift(item)
+      } else {
+        // 从未完成中删除， 添加到已完成中
+        this.taskCloseArr.splice(index, 1)
+        this.taskArr.push(item)
+        this.sortTaskArr()
+      }
     },
     /** 切换任务 */
     checkouTask (item) {
@@ -283,8 +287,12 @@ export default {
     },
     /** 删除清单 */
     deleteTask (item, index) {
-      api.deleteTask({}, this.listId, item._id).then(res => {
+      if (item.close) {
+        this.taskCloseArr.splice(index, 1)
+      } else {
         this.taskArr.splice(index, 1)
+      }
+      api.deleteTask({}, this.listId, item._id).then(res => {
         this.$message({
           type: 'success',
           message: '删除任务成功'
