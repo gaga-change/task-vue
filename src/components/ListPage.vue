@@ -151,7 +151,7 @@ export default {
       date: null, // 时间，系统时间
       taskArr: null,
       taskCloseArr: null, // 已关闭任务
-      havaMore: true, // 有未载入的已完成任务
+      havaMore: false, // 有未载入的已完成任务
     }
   },
   computed: {
@@ -194,6 +194,9 @@ export default {
         this.taskArr = res.data.task
         this.sortTaskArr()
         this.taskCloseArr = res.data.task2
+        if (res.data.task2.length == 5) {
+          this.havaMore = true
+        }
       })
     },
     /** 加载更多 */
