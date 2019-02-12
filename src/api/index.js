@@ -38,6 +38,8 @@ export default {
   deleteList: (params, listId) => axios.delete(`${base}/list/${listId}`),
   /** 修改清单 */
   modifyList: (params, listId) => axios.put(`${base}/list/${listId}`, params),
+  /** 修改清单排序 */
+  changeOrder: (params, listId) => axios.put(`${base}/list/${listId}/order`, params),
   /** 查询清单（单个） */
   findOneList: (params, listId) => axios.get(`${base}/list/${listId}`, {
     params
