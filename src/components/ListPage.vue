@@ -180,8 +180,9 @@ export default {
     $(document).off('click', this.documentClickFn)
   },
   beforeRouteUpdate (to, from, next) {
-    // 子页面路由更新 不监听
-    if (to.name === 'TaskPage') return next()
+    // 任务详情切换 或者 当前显示任务被删除，则不更新数据
+    if (to.name === 'TaskPage' || to.params.listId === from.params.listId) return next()
+    // 清单切换，手动初始化数据
     this.listId = to.params.listId
     this.initData()
     next()
@@ -278,15 +279,23 @@ export default {
     },
     /** 切换任务 */
     checkouTask (item) {
-      if (!item) return
-      this.checkTask = item
-      this.$router.push({
-        name: 'TaskPage',
-        params: {
-          listId: this.listId,
-          taskId: item._id
-        }
-      })
+      if (!item) {
+        this.$router.push({
+          name: 'ListPage',
+          params: {
+            listId: this.listId,
+          }
+        })
+      } else {
+        this.checkTask = item
+        this.$router.push({
+          name: 'TaskPage',
+          params: {
+            listId: this.listId,
+            taskId: item._id
+          }
+        })
+      }
     },
     /** 任务名称修改事件 */
     taskNameInput (item) {
@@ -333,6 +342,10 @@ export default {
         this.taskCloseArr.splice(index, 1)
       } else {
         this.taskArr.splice(index, 1)
+      }
+      // 路由回到任务列表
+      if (item === this.checkTask) {
+        this.checkouTask()
       }
       api.deleteTask({}, this.listId, item._id).then(res => {
         this.$message({
