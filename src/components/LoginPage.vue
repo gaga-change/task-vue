@@ -123,8 +123,41 @@ export default {
         this.login()
       }
     },
+    // 校验输入内容长度
+    checkText (keys) {
+      let opt = {
+        username: { min: 1, max: 50, name: '邮箱' },
+        password: { min: 4, max: 50, name: '密码' },
+      }
+      let message = ''
+      for (let i = 0; i < keys.length; i++) {
+        let key = keys[i]
+        let val = this[key]
+        if (val.length === 0) {
+          message = '请输入' + opt[key].name
+          break
+        } else if (val.length < opt[key].min) {
+          message = `${opt[key].name}长度至少${opt[key].min}位`
+          break
+        } else if (val.length > opt[key].max) {
+          message = `${opt[key].name}长度至多${opt[key].max}位`
+          break
+        }
+      }
+      if (message) {
+        this.$message({
+          type: 'warning',
+          showClose: true,
+          message
+        })
+        return message
+      }
+    },
     // 登入
     login () {
+      if (this.checkText(['username', 'password'])) {
+        return
+      }
       api.login({
         username: this.username,
         password: this.password
@@ -135,6 +168,9 @@ export default {
     },
     // 注册
     register () {
+      if (this.checkText(['username', 'password'])) {
+        return
+      }
       api.register({
         username: this.username,
         name: this.name,
