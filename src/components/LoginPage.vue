@@ -1,117 +1,175 @@
 <template>
-	<div class="login-page">
-		<div class="bg"></div>
-		<div class="container">
-			<!-- 头部 -->
-			<h1 class="text-center title">我的清单</h1>
-			<!-- 主内容 -->
-			<div class="row">
-				<div class="col">
-					<div class="main">
-						<!-- 昵称 -->
-						<div class="ipt-group" v-if="state === REGISTER">
-							<input name="username" type="text" placeholder="昵称 ( 可选 )" v-model="name">
-						</div>
-						<!-- 邮箱 -->
-						<div class="ipt-group">
-							<input name="username" type="email" placeholder="邮箱" v-model="username">
-						</div>
-						<!-- 密码 -->
-						<div class="ipt-group">
-							<input name="password" type="password" placeholder="密码" v-model="password">
-						</div>
-						<div>
-							<!-- 登入 -->
-							<div class="btn-group" v-if="state === LOGIN">
-								<button class="btn" type="button" @click="login">登入</button>
-							</div>
-							<!-- 注册 -->
-							<div class="btn-group" v-else>
-								<button class="btn" type="button" @click="register">创建免费账户</button>
-							</div>
-						</div>
-						<div>
-							<!-- other -->
-							<div class="other text-center" v-if="state === LOGIN">
-								<button class="btn btn-link" type="button" @click="state=REGISTER">创建免费账户</button>
-							</div>
-							<!-- other -->
-							<div class="other text-center" v-else>
-								已有账户?
-								<button class="btn btn-link" type="button" @click="state=LOGIN">登录</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div
+    class="login-page"
+    @keyup.enter="keyupEnter"
+  >
+    <div class="bg"></div>
+    <div class="container">
+      <!-- 头部 -->
+      <h1 class="text-center title">我的清单</h1>
+      <!-- 主内容 -->
+      <div class="row">
+        <div class="col">
+          <div class="main">
+            <!-- 昵称 -->
+            <div
+              class="ipt-group"
+              v-if="state === REGISTER"
+            >
+              <input
+                name="username"
+                type="text"
+                placeholder="昵称 ( 可选 )"
+                v-model="name"
+              >
+            </div>
+            <!-- 邮箱 -->
+            <div class="ipt-group">
+              <input
+                name="username"
+                type="email"
+                placeholder="邮箱"
+                v-model="username"
+              >
+            </div>
+            <!-- 密码 -->
+            <div class="ipt-group">
+              <input
+                name="password"
+                type="password"
+                placeholder="密码"
+                v-model="password"
+              >
+            </div>
+            <div>
+              <!-- 登入 -->
+              <div
+                class="btn-group"
+                v-if="state === LOGIN"
+              >
+                <button
+                  class="btn"
+                  type="button"
+                  @click="login"
+                >登入</button>
+              </div>
+              <!-- 注册 -->
+              <div
+                class="btn-group"
+                v-else
+              >
+                <button
+                  class="btn"
+                  type="button"
+                  @click="register"
+                >创建免费账户</button>
+              </div>
+            </div>
+            <div>
+              <!-- other -->
+              <div
+                class="other text-center"
+                v-if="state === LOGIN"
+              >
+                <button
+                  class="btn btn-link"
+                  type="button"
+                  @click="state=REGISTER"
+                >创建免费账户</button>
+              </div>
+              <!-- other -->
+              <div
+                class="other text-center"
+                v-else
+              >
+                已有账户?
+                <button
+                  class="btn btn-link"
+                  type="button"
+                  @click="state=LOGIN"
+                >登录</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>
 
 <script>
 import api from '../api'
 export default {
-	data() {
-		return {
-			LOGIN: 1,
-			REGISTER: 2,
-			state: null,
-			username: '',
-			password: '',
-			name: ''
-		}
-	},
-	created() {
-		this.state = this.LOGIN
-	},
-	methods: {
-		// 登入
-		login() {
-			api.login({
-				username: this.username,
-				password: this.password
-			}).then(res => {
-				console.log(res)
-				this.$router.push({ name: 'HomePage' })
-			})
-		},
-		// 注册
-		register() {
-			api.register({
-				username: this.username,
-				name: this.name,
-				password: this.password
-			}).then(res => {
-				this.state = this.LOGIN
-				this.$message({
-					type: 'success',
-					message: '注册成功'
-				})
-			})
-		}
-	}
+  data () {
+    return {
+      LOGIN: 1,
+      REGISTER: 2,
+      state: null,
+      username: '',
+      password: '',
+      name: ''
+    }
+  },
+  created () {
+    this.state = this.LOGIN
+  },
+  methods: {
+    // 回车键 自动触发登录或注册
+    keyupEnter () {
+      if (this.state === this.REGISTER) {
+        this.register()
+      } else {
+        this.login()
+      }
+    },
+    // 登入
+    login () {
+      api.login({
+        username: this.username,
+        password: this.password
+      }).then(res => {
+        console.log(res)
+        this.$router.push({ name: 'HomePage' })
+      })
+    },
+    // 注册
+    register () {
+      api.register({
+        username: this.username,
+        name: this.name,
+        password: this.password
+      }).then(res => {
+        this.state = this.LOGIN
+        this.$message({
+          type: 'success',
+          message: '注册成功'
+        })
+      })
+    }
+  }
 }
 </script>
 
 <style lang="less">
 .login-page {
-	.bg {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		margin: auto;
-		background-color: #fdfdfd;
-		z-index: -1;
-	}
-	input, button {
-		&:focus {
-			outline: none;
-			// box-shadow: none;
-		}
-	}
+  .bg {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: #fdfdfd;
+    z-index: -1;
+  }
+  input,
+  button {
+    &:focus {
+      outline: none;
+      // box-shadow: none;
+    }
+  }
   .title {
     margin: 30px auto 50px;
   }
@@ -164,8 +222,8 @@ export default {
     button.btn-link {
       font-size: inherit;
       color: #617fde;
-			text-decoration: none;
-			vertical-align: inherit;
+      text-decoration: none;
+      vertical-align: inherit;
       &:hover {
         color: #617fde;
       }
