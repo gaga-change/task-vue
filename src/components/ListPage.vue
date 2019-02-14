@@ -27,6 +27,7 @@
               <!-- <ul class="task-list-ul" v-if="taskArr"> -->
               <li
                 v-for="(item, index) in taskArr"
+                :data-id="item._id"
                 :key="item._id"
                 :data-index="index"
                 :class="{
@@ -48,7 +49,7 @@
                     v-model="item.name"
                     @change="taskNameChange(item)"
                     @input="taskNameInput(item)"
-                    @keyup.enter="blur($event)"
+                    @keyup.enter="blur($event);addTask('')"
                   >
                   <el-dropdown @command="handleCommand">
                     <span class="el-dropdown-link ">
@@ -295,10 +296,17 @@ export default {
       api.modifyTask({ name: item.name }, this.listId, item._id)
     },
     /** 添加任务 */
-    addTask () {
+    addTask (text) {
+      let name = this.newTask.name
+      let newEmpty = typeof text === 'string'
+      if (newEmpty) {
+        name = ''
+      } else if (name.length === 0) {
+        return
+      }
       let task = {
         _id: window.uuid(),
-        name: this.newTask.name,
+        name,
         close: false,
         closeAt: null,
         createAt: this.date,
@@ -306,6 +314,15 @@ export default {
       }
       this.newTask.name = ''
       this.taskArr.unshift(task)
+      if (newEmpty) {
+        this.checkouTask(task)
+        this.$nextTick(() => {
+          var ipt = $(
+            `ul.task-list-ul li[data-id=${task._id}] .task-name-ipt`
+          )
+          ipt && ipt.focus()
+        })
+      }
       api.createTask(task, this.listId).then(res => {
       })
     },
