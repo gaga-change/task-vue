@@ -158,6 +158,9 @@ export default {
   computed: {
     newTaskName () {
       return this.$store.state.inputTaskName
+    },
+    taskCache () {
+      return this.$store.state.taskCache
     }
   },
   watch: {
@@ -308,6 +311,8 @@ export default {
     /** 添加任务 */
     addTask (text) {
       let name = this.newTask.name
+      this.newTask.name = ''
+      // 判断是否是回车自动创建的空任务
       let newEmpty = typeof text === 'string'
       if (newEmpty) {
         name = ''
@@ -322,9 +327,10 @@ export default {
         createAt: this.date,
         content: ''
       }
-      this.newTask.name = ''
       this.taskArr.unshift(task)
+      // 如果是空任务，自动获取焦点，自动切换路径，存储缓存，防止立即获取任务详情失败
       if (newEmpty) {
+        this.$store.commit('updateTaskCache', task)
         this.checkouTask(task)
         this.$nextTick(() => {
           var ipt = $(

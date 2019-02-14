@@ -36,6 +36,9 @@ export default {
   computed: {
     newTaskName () {
       return this.$store.state.inputTaskName
+    },
+    taskCache () {
+      return this.$store.state.taskCache
     }
   },
   watch: {
@@ -61,9 +64,16 @@ export default {
     /** 数据初始化 */
     initData () {
       if (!this.taskId || !this.listId) return
-      api.findOneTask({}, this.listId, this.taskId).then(res => {
-        this.task = res.data
-      })
+      let taskCache = this.taskCache[this.taskId]
+      if (taskCache) {
+        this.task = JSON.parse(JSON.stringify(taskCache))
+        this.$store.commit('updateTaskCache', this.taskId)
+      } else {
+        api.findOneTask({}, this.listId, this.taskId).then(res => {
+          this.task = res.data
+        })
+      }
+
     },
     /** 任务名称修改事件 */
     taskNameInput (item) {
