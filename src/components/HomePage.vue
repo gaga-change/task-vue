@@ -294,8 +294,14 @@ export default {
     deleteList (item, index) {
       // if (!confirm(`是否删除清单【${item.name}】`)) return
       this.listArr.splice(index, 1)
+      // 如果当前路由id 是被删除的清单，则调整路由
+      if (this.checkItem === item) {
+        if (this.listArr.length)
+          this.checkoutList(this.listArr[0])
+        else this.$router.push('/')
+      }
       api.deleteList({}, item._id).then(res => {
-         this.$message({
+        this.$message({
           type: 'success',
           message: '删除清单成功'
         })

@@ -190,6 +190,7 @@ export default {
     /** 数据初始化 */
     initData () {
       if (!this.listId) return
+      this.taskArr = []
       api.findTask2({ pageSize: 5 }, this.listId).then(res => {
         this.timerRun(res.headers.date)
         this.taskArr = res.data.task
