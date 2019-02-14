@@ -55,8 +55,7 @@
             <a
               class="item-a"
               href="JavaScript:void(0)"
-              data-toggle="modal"
-              data-target="#NewListModal"
+              @click="dialogVisible = true"
             >+ 添加清单</a>
           </li>
         </ul>
@@ -66,6 +65,39 @@
       <!-- 任务列表 -->
       <router-view></router-view>
     </div>
+    <dir
+      class="dialog-area"
+      @keyup.enter="addList();dialogVisible=false"
+    >
+      <el-dialog
+        title="添加清单"
+        :visible.sync="dialogVisible"
+      >
+        <el-form
+          :model="newList"
+          @submit.native.prevent
+        >
+          <el-form-item
+            label="清单名称"
+            :label-width="formLabelWidth"
+          >
+            <el-input
+              v-model="newList.name"
+              autocomplete="off"
+            ></el-input>
+          </el-form-item>
+        </el-form> <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="dialogVisible = false;addList()"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </dir>
     <!-- 添加清单提示框 -->
     <div
       class="modal fade"
@@ -139,11 +171,13 @@ export default {
       newList: {
         name: ''
       },
+      dialogVisible: false, // 添加清单对话框
       checkItem: null, // 当前显示的清单
       params: this.$route.params,
       listArr: [],
       lastControlEle: null, // 上一个显示的操作菜单
-      documentClickFn: null
+      documentClickFn: null,
+      formLabelWidth: '120px'
     }
   },
   created () {
@@ -259,8 +293,12 @@ export default {
     /** 删除清单 */
     deleteList (item, index) {
       // if (!confirm(`是否删除清单【${item.name}】`)) return
+      this.listArr.splice(index, 1)
       api.deleteList({}, item._id).then(res => {
-        this.listArr.splice(index, 1)
+         this.$message({
+          type: 'success',
+          message: '删除清单成功'
+        })
       })
     },
     /** 切换清单 */
@@ -305,6 +343,11 @@ export default {
 </script>
 
 <style lang="less">
+.dialog-area {
+  .el-input {
+    max-width: 300px;
+  }
+}
 // 主体结构
 .content-main {
   position: relative;

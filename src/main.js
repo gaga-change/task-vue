@@ -3,19 +3,27 @@ import App from './App'
 import router from './router'
 import store from './store'
 import 'dragula/dist/dragula.css'
-import { 
+import {
+  Button,
   Dropdown,
   DropdownMenu,
   DropdownItem,
+  Dialog,
+  Form,
+  FormItem,
   Message,
   Checkbox,
   Input,
   Scrollbar
 } from 'element-ui'
 
+Vue.use(Button)
 Vue.use(Dropdown)
 Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
+Vue.use(Dialog)
+Vue.use(Form)
+Vue.use(FormItem)
 Vue.use(Checkbox)
 Vue.use(Input)
 Vue.use(Scrollbar)
