@@ -1,6 +1,10 @@
 <template>
   <div class="task-page">
     <div class="title-area">
+      <i
+        class="el-icon-back"
+        @click="$router.go(-1)"
+      ></i>
       <h2 class="task-name">
         <input
           type="text"
@@ -92,8 +96,19 @@ export default {
 .task-page {
   height: 100%;
   .title-area {
+    display: flex;
+    align-items: center;
     padding: 16px 14px 12px 20px;
+    .el-icon-back {
+      display: none;
+      @media (max-width: 920px) {
+        display: block;
+        font-size: 20px;
+        margin-right: 20px;
+      }
+    }
     .task-name {
+      flex: 1;
       min-height: 25px;
       line-height: 25px;
       margin: 0;

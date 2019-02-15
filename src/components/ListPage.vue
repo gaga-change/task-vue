@@ -137,7 +137,10 @@
       </div>
     </div>
     <!-- 任务详情 -->
-    <div class="detail-area">
+    <div
+      class="detail-area"
+      :class="{'_show': params.taskId}"
+    >
       <router-view></router-view>
     </div>
   </div>
@@ -168,6 +171,9 @@ export default {
     },
     listCache () {
       return this.$store.state.listCache
+    },
+    params () {
+      return this.$route.params
     }
   },
   watch: {
@@ -430,11 +436,15 @@ export default {
     right: 0;
     height: 100%;
     width: 36%;
+    z-index: 2;
     border-left: 1px solid #ededed;
     background-color: #fafafa;
     @media (max-width: 920px) {
       width: 0;
       overflow: hidden;
+      &._show {
+        width: 100%;
+      }
     }
   }
 
