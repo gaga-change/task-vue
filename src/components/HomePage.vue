@@ -65,7 +65,7 @@
       <!-- 任务列表 -->
       <router-view></router-view>
     </div>
-    <dir
+    <div
       class="dialog-area"
       @keyup.enter="addList();dialogVisible=false"
     >
@@ -97,67 +97,7 @@
           >确 定</el-button>
         </span>
       </el-dialog>
-    </dir>
-    <!-- 添加清单提示框 -->
-    <div
-      class="modal fade"
-      id="NewListModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="NewListModalLabel"
-      aria-hidden="true"
-    >
-      <div
-        class="modal-dialog"
-        role="document"
-      >
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5
-              class="modal-title"
-              id="NewListModalLabel"
-            >添加清单</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label
-                  for="recipient-name"
-                  class="col-form-label hide"
-                >清单名称</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="recipient-name"
-                  v-model="newList.name"
-                >
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >取消</button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-dismiss="modal"
-              @click="addList"
-            >保存</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div>  
   </div>
 </template>
 
@@ -169,6 +109,7 @@ export default {
   data () {
     return {
       newList: {
+        _id: null,
         name: ''
       },
       dialogVisible: false, // 添加清单对话框
@@ -284,10 +225,13 @@ export default {
     },
     /** 修改清单 */
     modifyList (item, index) {
-      let newName = window.prompt('清单名')
-      if (!newName) return
-      api.modifyList({ name: newName }, item._id).then(res => {
-        item.name = newName
+      this.dialogVisible = true
+      // this.newList.name = item.name
+      // this.newList._id = item._id
+      this.newList = item
+      this.$nextTick(() => {
+        let ele = document.querySelector('.dialog-area input')
+        ele && ele.focus()
       })
     },
     /** 删除清单 */
@@ -314,13 +258,25 @@ export default {
       this.checkItem = item
       this.$router.push({ name: 'ListPage', params: { listId: this.checkItem._id } })
     },
-    /** 添加清单 */
+    /** 添加或修改 清单 */
     addList () {
-      api.createList(this.newList).then(res => {
-        this.newList.name = ''
-        this.listArr.unshift(res.data)
-        this.checkoutList(res.data)
-      })
+      if (this.newList._id) {
+        // 修改
+        api.modifyList({ name: this.newList.name }, this.newList._id).then(res => {
+          this.$message({
+            type: 'success',
+            message: '修改清单成功'
+          })
+        })
+        this.newList = {name: ''} // 初始化
+      } else {
+        // 创建
+        api.createList(this.newList).then(res => {
+          this.newList.name = ''
+          this.listArr.unshift(res.data)
+          this.checkoutList(res.data)
+        })
+      }
     },
     /** 初始化数据 */
     initData () {
