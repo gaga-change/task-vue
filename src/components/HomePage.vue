@@ -55,7 +55,7 @@
             <a
               class="item-a"
               href="JavaScript:void(0)"
-              @click="dialogVisible = true"
+              @click="newList._id=null;newList.name='';dialogVisible = true;"
             >+ 添加清单</a>
           </li>
         </ul>

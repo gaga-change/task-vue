@@ -227,6 +227,7 @@ export default {
       if (!this.listId) return
       this.taskArr = []
       if (this.listCache[this.listId]) {
+        this.$store.commit('updateListCache', this.listId)
         this.taskCloseArr = []
         this.havaMore = false
       } else {
