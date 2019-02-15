@@ -1,18 +1,18 @@
 <template>
   <div class="content-main">
     <div class="content-left">
-      <!-- 顶部 -->
-      <div class="d-none">
-        主页
-        <button @click="logout">退出</button>
-      </div>
       <!-- 清单列表 -->
       <div>
-        <ul class="tab-list list-inline">
-          <li>
-            <a href="JavaScript:void(0)">清单</a>
-          </li>
-        </ul>
+        <div class="user-area">
+          <el-dropdown @command="handleCommand">
+            <span class="el-dropdown-link">
+              {{user.name || ''}}
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
         <ul
           class="dir-list list-inline"
           id="dragula"
@@ -97,7 +97,7 @@
           >确 定</el-button>
         </span>
       </el-dialog>
-    </div>  
+    </div>
   </div>
 </template>
 
@@ -112,13 +112,15 @@ export default {
         _id: null,
         name: ''
       },
+      user: {}, // 用户信息
       dialogVisible: false, // 添加清单对话框
       checkItem: null, // 当前显示的清单
       params: this.$route.params,
       listArr: [],
       lastControlEle: null, // 上一个显示的操作菜单
       documentClickFn: null,
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      setIntervalKey: null, // 定时器
     }
   },
   computed: {
@@ -137,14 +139,31 @@ export default {
         this.lastControlEle.addClass('d-none')
     }
     $(document).on('click', this.documentClickFn)
+    // 获取当前用户，以及系统时间,并绑定到 window.sysDate
+    api.currentUser().then(res => {
+      timerRun.call(this, res.headers.date)
+      /** 计时器 */
+      function timerRun (sysDate) {
+        window.sysDate = new Date(sysDate)
+        this.setIntervalKey = setInterval(() => {
+          setTimeout(() => {
+            window.sysDate = new Date(window.sysDate.getTime() + 1000)
+            // console.log(window.sysDate)
+          }, 0)
+        }, 1000)
+      }
+      this.user = res.data
+    })
   },
   mounted () {
     this.dragulaRun()
   },
   destroyed () {
+    clearInterval(this.setIntervalKey)
     $(document).off('click', this.documentClickFn)
   },
   methods: {
+    // 拖拽控件启动
     dragulaRun () {
       let oldPrevious = null
       dragula([document.querySelector('#dragula')], {
@@ -175,6 +194,10 @@ export default {
           }
         }
       })
+    },
+    // 用户名下拉菜单点击
+    handleCommand (command) {
+      this[command] && this[command]()
     },
     // 清单向上移动
     up (elIndex, nextOrder) {
@@ -272,7 +295,7 @@ export default {
             message: '修改清单成功'
           })
         })
-        this.newList = {name: ''} // 初始化
+        this.newList = { name: '' } // 初始化
       } else {
         // 创建
         api.createList(this.newList).then(res => {
@@ -376,20 +399,12 @@ export default {
       }
     }
   }
-  .tab-list {
-    display: flex;
-    li {
-      flex: 1;
-      text-align: center;
-      a {
-        display: block;
-        &:hover {
-          text-decoration: none;
-        }
-      }
+  .user-area {
+    padding: 20px;
+    .el-dropdown-link {
+      color: #fff;
     }
   }
-
   .dir-list {
     li {
       &:hover {

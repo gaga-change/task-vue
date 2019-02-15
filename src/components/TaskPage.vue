@@ -82,7 +82,6 @@ export default {
     /** 任务名称修改 */
     taskContentChange (item) {
       api.modifyTask(item, this.listId, this.taskId).then(res => {
-        console.log('res: ', res)
       })
     }
   }

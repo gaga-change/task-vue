@@ -162,7 +162,6 @@ export default {
         username: this.username,
         password: this.password
       }).then(res => {
-        console.log(res)
         this.$router.push({ name: 'HomePage' })
       })
     },
