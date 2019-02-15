@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import api from './api'
 import 'dragula/dist/dragula.css'
 import {
   Button,
@@ -54,17 +55,33 @@ Array.prototype.mySort = function (cb) {
 }
 
 function uuid() {
-    var s = [];
-    var hexDigits = "0123456789abcdef";
-    for (var i = 0; i < 24; i++) {
-        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-    }
-    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-    var uuid = s.join("");
-    return uuid;
+  var s = [];
+  var hexDigits = "0123456789abcdef";
+  for (var i = 0; i < 24; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+  var uuid = s.join("");
+  return uuid;
 }
 
 window.uuid = uuid
+
+// 获取当前用户，以及系统时间。并绑定到 window.sysDate 和  window.user 上
+api.currentUser().then(res => {
+  timerRun(res.headers.date)
+  /** 计时器 */
+  function timerRun(sysDate) {
+    window.sysDate = new Date(sysDate)
+    setInterval(() => {
+      setTimeout(() => {
+        window.sysDate = new Date(window.sysDate.getTime() + 1000)
+        // console.log(window.sysDate)
+      }, 0)
+    }, 1000)
+  }
+  window.user = res.data
+})
 
 /* eslint-disable no-new */
 new Vue({

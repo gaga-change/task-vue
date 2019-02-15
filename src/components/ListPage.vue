@@ -161,6 +161,9 @@ export default {
     },
     taskCache () {
       return this.$store.state.taskCache
+    },
+    listCache () {
+      return this.$store.state.listCache
     }
   },
   watch: {
@@ -195,17 +198,21 @@ export default {
     initData () {
       if (!this.listId) return
       this.taskArr = []
-      api.findTask2({ pageSize: 5 }, this.listId).then(res => {
-        this.timerRun(res.headers.date)
-        this.taskArr = res.data.task
-        this.sortTaskArr()
-        this.taskCloseArr = res.data.task2
-        if (res.data.task2.length == 5) {
-          this.havaMore = true
-        } else {
-          this.havaMore = false
-        }
-      })
+      if (this.listCache[this.listId]) {
+        this.taskCloseArr = []
+        this.havaMore = false
+      } else {
+        api.findTask2({ pageSize: 5 }, this.listId).then(res => {
+          this.taskArr = res.data.task
+          this.sortTaskArr()
+          this.taskCloseArr = res.data.task2
+          if (this.taskCloseArr.length == 5) {
+            this.havaMore = true
+          } else {
+            this.havaMore = false
+          }
+        })
+      }
     },
     /** 加载更多 */
     loadMore () {
@@ -223,17 +230,6 @@ export default {
       if (command.type === 'del') {
         this.deleteTask(command.item, command.index)
       }
-      // this.$message('click on item ' + command);
-    },
-    /** 计时器 */
-    timerRun (sysDate) {
-      let sysTime = new Date(sysDate).getTime()
-      this.date = new Date(sysDate)
-      setInterval(() => {
-        setTimeout(() => {
-          this.date = new Date(this.date.getTime() + 1000)
-        }, 0)
-      }, 1000)
     },
     /** 任务排序 */
     sortTaskArr () {
@@ -266,7 +262,7 @@ export default {
     closeTask (e, item, index) {
       if (e.target.type !== 'checkbox') return
       let close = e.target.checked
-      item.closeAt = close ? new Date(this.date) : null
+      item.closeAt = close ? new Date(window.sysDate) : null
       item.close = close
       api.switchTask(item, this.listId, item._id)
       if (close) {
@@ -324,7 +320,7 @@ export default {
         name,
         close: false,
         closeAt: null,
-        createAt: this.date,
+        createAt: window.sysDate,
         content: ''
       }
       this.taskArr.unshift(task)

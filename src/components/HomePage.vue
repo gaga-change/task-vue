@@ -121,6 +121,11 @@ export default {
       formLabelWidth: '120px'
     }
   },
+  computed: {
+    listCache () {
+      return this.$store.state.taskCache
+    }
+  },
   created () {
     this.initData()
     window.GO_LOGIN = () => {
@@ -254,7 +259,6 @@ export default {
     /** 切换清单 */
     checkoutList (item) {
       if (!item) return
-      // if (!item.tasks) this.$set(item, 'tasks', [])
       this.checkItem = item
       this.$router.push({ name: 'ListPage', params: { listId: this.checkItem._id } })
     },
@@ -273,6 +277,7 @@ export default {
         // 创建
         api.createList(this.newList).then(res => {
           this.newList.name = ''
+          this.$store.commit('updateListCache', res.data)
           this.listArr.unshift(res.data)
           this.checkoutList(res.data)
         })
