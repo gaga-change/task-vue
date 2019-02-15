@@ -4,6 +4,10 @@
     <div class="list-area">
       <div class="task-list-area">
         <div class="list-header">
+          <i
+            class="el-icon-menu"
+            id="ShowMenuTarget"
+          ></i>
           <h2 class="header-name">任务列表</h2>
         </div>
         <div
@@ -181,6 +185,24 @@ export default {
         this.lastControlEle.addClass('d-none')
     }
     $(document).on('click', this.documentClickFn)
+  },
+  mounted () {
+    let menuEle = $('.content-left')
+    $('#ShowMenuTarget').click(e => {
+      console.log('...')
+      if (menuEle.hasClass('_show')) {
+        menuEle.removeClass('_show')
+      } else {
+        menuEle.addClass('_show')
+      }
+      e.stopPropagation()
+    })
+    menuEle.click(e => {
+      e.stopPropagation()
+    })
+    $(document).click(e => {
+      menuEle.removeClass('_show')
+    })
   },
   destroyed () {
     $(document).off('click', this.documentClickFn)
@@ -421,9 +443,21 @@ export default {
     transition: all 0.2s ease-in-out;
   }
   .list-header {
+    display: flex;
+    align-items: center;
     padding: 0 20px;
     margin: 12px 0;
+    .el-icon-menu {
+      display: none;
+      cursor: pointer;
+      font-size: 22px;
+      margin-right: 20px;
+      @media (max-width: 1020px) {
+        display: block;
+      }
+    }
     .header-name {
+      flex: 1;
       height: 36px;
       margin: 0;
       line-height: 36px;

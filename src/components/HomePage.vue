@@ -1,12 +1,12 @@
 <template>
   <div class="content-main">
-    <div class="content-left">
+    <div class="content-left" :class="{'_show2': !params.listId}">
       <!-- 清单列表 -->
       <div>
         <div class="user-area">
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
-              {{user.name || ''}}
+              {{user.name || user.username || ''}}
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="logout">退出登录</el-dropdown-item>
@@ -115,7 +115,7 @@ export default {
       user: {}, // 用户信息
       dialogVisible: false, // 添加清单对话框
       checkItem: null, // 当前显示的清单
-      params: this.$route.params,
+      // params: this.$route.params,
       listArr: [],
       lastControlEle: null, // 上一个显示的操作菜单
       documentClickFn: null,
@@ -126,6 +126,9 @@ export default {
   computed: {
     listCache () {
       return this.$store.state.taskCache
+    },
+    params () {
+      return this.$route.params
     }
   },
   created () {
@@ -157,6 +160,10 @@ export default {
   },
   mounted () {
     this.dragulaRun()
+  },
+  beforeRouteUpdate (to, from, next) {
+    console.log(to, this.params)
+    next()
   },
   destroyed () {
     clearInterval(this.setIntervalKey)
@@ -347,16 +354,30 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 2;
     height: 100%;
     width: 260px;
     background-color: #5069c4;
     color: #fff;
     transition: all 0.2s ease-in-out;
+    &._show, &._show2{
+      left: 0;
+    }
     @media (max-width: 1020px) {
-      width: 0;
+      left: -260px;
       overflow: hidden;
     }
+  }
+}
+.el-form-item__label {
+  @media (max-width: 1020px) {
+    // display: none;
+    width: auto !important;
+  }
+}
+.el-form-item__content {
+  @media (max-width: 1020px) {
+    margin-left: 70px !important;
   }
 }
 // 拖拽复制体
