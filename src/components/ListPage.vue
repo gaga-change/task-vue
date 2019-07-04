@@ -43,7 +43,7 @@
                   <div class="task-line"></div>
                   <span @click.stop="closeTask($event, item, index)">
                     <el-checkbox
-                      class="task-checkbox"
+                      :class="`task-checkbox priority-${item.priority}`"
                       v-model="item.close"
                     ></el-checkbox>
                   </span>
@@ -222,6 +222,10 @@ export default {
     next()
   },
   methods: {
+    /** 计算优先级 */
+    setPriority(v) {
+      return v.name.split(' ')[0].split('#').length
+    },
     /** 数据初始化 */
     initData () {
       if (!this.listId) return
@@ -232,7 +236,10 @@ export default {
         this.havaMore = false
       } else {
         api.findTask2({ pageSize: 5 }, this.listId).then(res => {
-          this.taskArr = res.data.task
+          this.taskArr = res.data.task.map(v => {
+            v.priority = this.setPriority(v)
+            return v
+          })
           this.sortTaskArr()
           this.taskCloseArr = res.data.task2
           if (this.taskCloseArr.length == 5) {
@@ -266,16 +273,19 @@ export default {
         let res = null
         a.createAt = _(a.createAt)
         b.createAt = _(b.createAt)
-
+        if (a.priority != b.priority) {
+          res = b.priority - a.priority > 0
+        } else {
+          res = b.createAt - a.createAt > 0
+        }
         // if (a.close != b.close) {
         //   res = a.close - b.close > -1
         // } else if (a.closeAt != b.closeAt) {
         //   res = b.closeAt - a.closeAt > 0
-        // } else {
-        res = b.createAt - a.createAt > 0
         // }
         return res
       })
+      this.taskArr = [...this.taskArr]
       function _ (date) {
         if (date) {
           return new Date(date).getTime()
@@ -331,6 +341,8 @@ export default {
     },
     /** 任务名称修改 */
     taskNameChange (item) {
+      item.priority = this.setPriority(item)
+      this.sortTaskArr()
       api.modifyTask({ name: item.name }, this.listId, item._id)
     },
     /** 添加任务 */
@@ -350,9 +362,11 @@ export default {
         close: false,
         closeAt: null,
         createAt: window.sysDate,
-        content: ''
+        content: '',
       }
+      task.priority = this.setPriority(task)
       this.taskArr.unshift(task)
+      this.sortTaskArr()
       // 如果是空任务，自动获取焦点，自动切换路径，存储缓存，防止立即获取任务详情失败
       if (newEmpty) {
         this.$store.commit('updateTaskCache', task)
@@ -511,6 +525,26 @@ export default {
       // .el-checkbox__inner:hover {
       // border-color: #dcdfe6;
       // }
+      &.priority-2 {
+        .el-checkbox__inner {
+          border-color: #1E9FFF;
+        }
+      }
+      &.priority-3 {
+        .el-checkbox__inner {
+          border-color: #FFB800;
+        }
+      }
+      &.priority-4 {
+        .el-checkbox__inner {
+          border-color: #FF5722;
+        }
+      }
+      &.priority-5 {
+        .el-checkbox__inner {
+          border-color: #2F4056;
+        }
+      }
     }
     // 任务分割线
     .task-line {
